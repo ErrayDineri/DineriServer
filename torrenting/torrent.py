@@ -73,6 +73,8 @@ def serialize_torrent(torrent):
         'save_path': torrent.save_path,
         'is_completed': torrent.state.lower() == 'uploading' or torrent.progress == 1.0,
         'added_on': torrent.added_on,
+        'num_seeds': torrent.num_seeds,
+        'num_peers': torrent.num_leechs,
     }
 
 def getAllTorrentsSerialized():
@@ -90,7 +92,6 @@ def getAllTorrentsSerialized():
     for torrent in torrents:
         torrent['download_speed'] = "{:.2f}".format(float(torrent['download_speed']) / 1024)  # Convert KB/s to MB/s
         torrent['upload_speed'] = "{:.2f}".format(float(torrent['upload_speed']) / 1024)  # Convert KB/s to MB/s
-    print(set(torrent['state'] for torrent in torrents))
     return torrents
 
 

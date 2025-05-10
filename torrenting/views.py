@@ -55,5 +55,13 @@ class DeleteTorrent(View):
         delete_files = request.POST.get('delete_files') == 'true'
         if not h:
             return JsonResponse({'error': 'Missing hash'}, status=400)
+
         deleteTorrent(h, delete_files)
-        return JsonResponse({'status': 'deleted', 'hash': h, 'deleted_files': delete_files})
+
+        # Tell the client to refresh the page
+        return JsonResponse({
+            'status': 'deleted',
+            'hash': h,
+            'deleted_files': delete_files,
+            'refresh': True
+        })
