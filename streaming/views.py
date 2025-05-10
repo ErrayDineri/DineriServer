@@ -7,15 +7,8 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from .forms import ScrapingForm
-from scraper import scrape_all_magnets
-from torrent import (
-    downloadTorrent,
-    getAllTorrentsSerialized,
-    pauseTorrent,
-    resumeTorrent,
-    forceStartTorrent,
-    deleteTorrent
-)
+from streaming.scraper import scrape_all_magnets
+from torrenting.torrent import downloadTorrent
 from .utils import clean_title
 from torrenting.views import TorrentStatusView
 

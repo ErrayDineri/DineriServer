@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from torrent import (
+from torrenting.torrent import (
     getAllTorrentsSerialized,
     pauseTorrent,
     resumeTorrent,

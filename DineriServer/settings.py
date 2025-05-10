@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -127,3 +128,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
