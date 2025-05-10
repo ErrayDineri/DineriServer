@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load form_filters %}
+
+{% block content %}
+<div class="glass-card">
+    <h1>🕷️ Torrent Scraper</h1>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <div class="mb-3 text-start">
+            {{ form.url.label_tag }}
+            {{ form.url|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-success btn-custom">Start Scraping</button>
+    </form>
+</div>
+{% endblock %}

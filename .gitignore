@@ -1,0 +1,7 @@
+*.pyc
+.env
+/venv
+!/media/videos/
+media/videos/*
+.vscode/
+db.sqlite3

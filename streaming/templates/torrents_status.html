@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-4">Torrent Status</h1>
+    <div class="row">
+        {% for t in torrents %}
+        <div class="col-md-6 mb-4">  <!-- Two torrents per row on medium screens and larger -->
+            <div class="torrent-card glass-card" id="torrent-{{ t.hash }}">
+                <h4>{{ t.name }}</h4>
+                <div class="mb-2">Progress: <span class="progress-text">{{ t.progress }}%</span></div>
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ t.progress }}%;"
+                        aria-valuenow="{{ t.progress }}" aria-valuemin="0" aria-valuemax="100">{{ t.progress }}%</div>
+                </div>
+                <p><strong>State:</strong> <span class="state">{{ t.state }}</span> |
+                    <strong>ETA:</strong> <span class="eta">{% if t.eta > 0 %}{{ t.eta }}s{% else %}∞{% endif %}</span> |
+                    <strong>Download Speed:</strong> <span class="dlspeed">{{ t.download_speed }} MB/s</span> |
+                    <strong>Upload Speed:</strong> <span class="upspeed">{{ t.upload_speed }} MB/s</span></p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let previousProgress = {};
+
+    function updateTorrents() {
+        $.getJSON("{% url 'torrent_status_json' %}", function (data) {
+            data.torrents.forEach(t => {
+                const card = $("#torrent-" + t.hash);
+                if (card.length) {
+                    const progressBar = card.find(".progress-bar");
+                    const prev = previousProgress[t.hash] || 0;
+
+                    // Highlight bar if progress increased
+                    if (t.progress > prev) {
+                        progressBar.addClass("bg-info");
+                        setTimeout(() => progressBar.removeClass("bg-info"), 500);
+                    }
+                    previousProgress[t.hash] = t.progress;
+
+                    // Update progress bar
+                    progressBar
+                        .css("width", t.progress + "%")
+                        .text(t.progress + "%")
+                        .attr("aria-valuenow", t.progress);
+                    card.find(".progress-text").text(t.progress + "%");
+
+                    // Update text fields
+                    card.find(".state").text(t.state);
+                    card.find(".eta").text(t.eta > 0 ? t.eta + "s" : "∞");
+                    card.find(".dlspeed").text(t.download_speed);
+                    card.find(".upspeed").text(t.upload_speed);
+                }
+            });
+        });
+    }
+
+    setInterval(updateTorrents, 1000); // Every 5 seconds
+</script>
+{% endblock %}
