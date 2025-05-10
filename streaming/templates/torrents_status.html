@@ -1,63 +1,192 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mt-4 mb-4">Torrent Status</h1>
-    <div class="row">
-        {% for t in torrents %}
-        <div class="col-md-6 mb-4">  <!-- Two torrents per row on medium screens and larger -->
-            <div class="torrent-card glass-card" id="torrent-{{ t.hash }}">
-                <h4>{{ t.name }}</h4>
-                <div class="mb-2">Progress: <span class="progress-text">{{ t.progress }}%</span></div>
-                <div class="progress mb-2">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ t.progress }}%;"
-                        aria-valuenow="{{ t.progress }}" aria-valuemin="0" aria-valuemax="100">{{ t.progress }}%</div>
-                </div>
-                <p><strong>State:</strong> <span class="state">{{ t.state }}</span> |
-                    <strong>ETA:</strong> <span class="eta">{% if t.eta > 0 %}{{ t.eta }}s{% else %}∞{% endif %}</span> |
-                    <strong>Download Speed:</strong> <span class="dlspeed">{{ t.download_speed }} MB/s</span> |
-                    <strong>Upload Speed:</strong> <span class="upspeed">{{ t.upload_speed }} MB/s</span></p>
-            </div>
-        </div>
-        {% endfor %}
+<div class="container py-4">
+    <h1 class="mb-4 text-white">Torrent Status</h1>
+
+    <!-- State Filter Buttons -->
+    <div class="btn-group mb-3">
+        <button class="btn btn-primary" onclick="applyFilter('all')">All</button>
+        <button class="btn btn-success" onclick="applyFilter('downloading')">Downloading</button>
+        <button class="btn btn-warning" onclick="applyFilter('queuedDL')">Unstarted</button>
+        <button class="btn btn-secondary" onclick="applyFilter('finished')">Finished</button>
+    </div>
+
+    <!-- Virtual-Scroll Container -->
+    <div id="scrollArea" class="clusterize-scroll" style="max-height:600px; overflow-y:auto;">
+        <ul id="contentArea" class="clusterize-content list-unstyled mb-0">
+            <!-- rows injected here -->
+        </ul>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/clusterize.js@0.18.1/clusterize.min.js"></script>
+
 <script>
-    let previousProgress = {};
+let allTorrents = [],
+    filteredTorrents = [],
+    page = 1,
+    previousProgress = {};
+let currentFilter = 'all';
 
-    function updateTorrents() {
-        $.getJSON("{% url 'torrent_status_json' %}", function (data) {
-            data.torrents.forEach(t => {
-                const card = $("#torrent-" + t.hash);
-                if (card.length) {
-                    const progressBar = card.find(".progress-bar");
-                    const prev = previousProgress[t.hash] || 0;
+function mapState(s) {
+    if (s === 'uploading' || s === 'stalledUP') return 'finished';
+    if (s === 'forcedDL' || s === 'downloading') return 'downloading';
+    if (s === 'queuedDL') return 'queuedDL';
+    return s;
+}
 
-                    // Highlight bar if progress increased
-                    if (t.progress > prev) {
-                        progressBar.addClass("bg-info");
-                        setTimeout(() => progressBar.removeClass("bg-info"), 500);
-                    }
-                    previousProgress[t.hash] = t.progress;
+function renderRow(t) {
+    return `
+    <li class="clusterize-row torrent-item" data-state="${mapState(t.state)}" id="torrent-${t.hash}">
+      <div class="torrent-card p-3 mb-3" style="background: rgba(255,255,255,0.05); border-radius: 8px;">
+        <h5 class="text-white">${t.name}</h5>
+        <div class="mb-2 text-white">
+          Progress: <span class="progress-text">${t.progress}%</span>
+        </div>
+        <div class="progress mb-2" style="height: 18px;">
+          <div class="progress-bar bg-success" role="progressbar"
+               style="width:${t.progress}%"
+               aria-valuenow="${t.progress}" aria-valuemin="0" aria-valuemax="100">
+            ${t.progress}%
+          </div>
+        </div>
+        <p class="mb-1 text-white">
+          <strong>State:</strong> <span class="state">${mapState(t.state)}</span>
+        </p>
+        <p class="mb-1 text-white">
+          <strong>ETA:</strong> <span class="eta">${t.eta > 0 ? t.eta + 's' : '∞'}</span>
+        </p>
+        <p class="mb-1 text-white">
+          <strong>DL Speed:</strong> <span class="dlspeed">${t.download_speed} MB/s</span>
+        </p>
+        <p class="mb-3 text-white">
+          <strong>UL Speed:</strong> <span class="upspeed">${t.upload_speed} MB/s</span>
+        </p>
 
-                    // Update progress bar
-                    progressBar
-                        .css("width", t.progress + "%")
-                        .text(t.progress + "%")
-                        .attr("aria-valuenow", t.progress);
-                    card.find(".progress-text").text(t.progress + "%");
+        <!-- Buttons -->
+        <div class="mt-2 d-flex flex-wrap gap-2">
+          <button class="btn btn-outline-warning btn-sm btn-action pause" data-hash="${t.hash}">⏸ Pause</button>
+          <button class="btn btn-outline-success btn-sm btn-action resume" data-hash="${t.hash}">▶ Resume</button>
+          <button class="btn btn-outline-info btn-sm btn-action force" data-hash="${t.hash}">⏩ Force Start</button>
+          <button class="btn btn-danger btn-sm btn-action delete-files" data-hash="${t.hash}">🗑 Delete+Files</button>
+          <button class="btn btn-outline-danger btn-sm btn-action delete" data-hash="${t.hash}">🗑 Remove</button>
+        </div>
+      </div>
+    </li>`;
+}
 
-                    // Update text fields
-                    card.find(".state").text(t.state);
-                    card.find(".eta").text(t.eta > 0 ? t.eta + "s" : "∞");
-                    card.find(".dlspeed").text(t.download_speed);
-                    card.find(".upspeed").text(t.upload_speed);
-                }
-            });
-        });
+const clusterize = new Clusterize({
+    scrollElem: document.getElementById('scrollArea'),
+    contentElem: document.getElementById('contentArea'),
+    rows: []
+});
+
+function loadTorrents(pg) {
+    $.getJSON("{% url 'torrent_status_json' %}?page=" + pg, data => {
+        allTorrents.push(...data.torrents);
+        applyFilter(currentFilter);
+    });
+}
+
+function applyFilter(state) {
+    currentFilter = state;
+    filteredTorrents = allTorrents.filter(t => {
+        const ms = mapState(t.state);
+        return state === 'all' || ms === state;
+    });
+
+    if (filteredTorrents.length === 0) {
+        clusterize.update([
+            `<li class="text-center text-white">🕵️‍♂️ No torrents match this filter.</li>`
+        ]);
+    } else {
+        clusterize.update(filteredTorrents.map(renderRow));
     }
+}
 
-    setInterval(updateTorrents, 1000); // Every 5 seconds
+function updateTorrents() {
+    $.getJSON("{% url 'torrent_status_json' %}?page=1", data => {
+        data.torrents.forEach(nt => {
+            const idx = allTorrents.findIndex(x => x.hash === nt.hash);
+            if (idx > -1) allTorrents[idx] = nt;
+        });
+
+        filteredTorrents.forEach(t => {
+            const card = $(`#torrent-${t.hash}`);
+            if (!card.length) return;
+            const upd = allTorrents.find(x => x.hash === t.hash);
+            const pb = card.find('.progress-bar');
+            const prev = previousProgress[t.hash] || 0;
+            if (upd.progress > prev) {
+                pb.addClass('bg-info');
+                setTimeout(() => pb.removeClass('bg-info'), 500);
+            }
+            previousProgress[t.hash] = upd.progress;
+            pb.css('width', `${upd.progress}%`).text(`${upd.progress}%`);
+            card.find('.progress-text').text(`${upd.progress}%`);
+            card.find('.state').text(mapState(upd.state));
+            card.find('.eta').text(upd.eta > 0 ? `${upd.eta}s` : '∞');
+            card.find('.dlspeed').text(`${upd.download_speed} MB/s`);
+            card.find('.upspeed').text(`${upd.upload_speed} MB/s`);
+        });
+    });
+}
+
+function getCSRF() {
+    return document.cookie.split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        .split('=')[1];
+}
+
+function torrentAction(action, hash, deleteFiles = false) {
+    const urlMap = {
+        pause: "{% url 'torrent_pause' %}",
+        resume: "{% url 'torrent_resume' %}",
+        force: "{% url 'torrent_force' %}",
+        delete: "{% url 'torrent_delete' %}"
+    };
+
+    let data = { hash };
+    if (action === 'delete') data.delete_files = deleteFiles;
+
+    $.ajax({
+        type: 'POST',
+        url: urlMap[action],
+        data,
+        headers: {
+            'X-CSRFToken': getCSRF()
+        },
+        success: () => updateTorrents(),
+        error: err => console.error(action, err)
+    });
+}
+
+$(function () {
+    loadTorrents(page);
+    setInterval(updateTorrents, 2000);
+
+    // Handle infinite scroll
+    $('#scrollArea').on('scroll', function () {
+        const { scrollTop, scrollHeight, clientHeight } = this;
+        if (scrollTop + clientHeight >= scrollHeight - 50) {
+            page++;
+            loadTorrents(page);
+        }
+    });
+
+    // Button delegation — fixes the issue!
+    $('#contentArea').on('click', '.btn-action', function () {
+        const hash = $(this).data('hash');
+        if ($(this).hasClass('pause')) torrentAction('pause', hash);
+        else if ($(this).hasClass('resume')) torrentAction('resume', hash);
+        else if ($(this).hasClass('force')) torrentAction('force', hash);
+        else if ($(this).hasClass('delete-files')) torrentAction('delete', hash, true);
+        else if ($(this).hasClass('delete')) torrentAction('delete', hash, false);
+    });
+});
 </script>
 {% endblock %}

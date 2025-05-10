@@ -90,5 +90,22 @@ def getAllTorrentsSerialized():
     for torrent in torrents:
         torrent['download_speed'] = "{:.2f}".format(float(torrent['download_speed']) / 1024)  # Convert KB/s to MB/s
         torrent['upload_speed'] = "{:.2f}".format(float(torrent['upload_speed']) / 1024)  # Convert KB/s to MB/s
-
+    print(set(torrent['state'] for torrent in torrents))
     return torrents
+
+
+def pauseTorrent(hash: str):
+    ensure_client()
+    qb_client.torrents_pause(torrent_hashes=hash)
+
+def resumeTorrent(hash: str):
+    ensure_client()
+    qb_client.torrents_resume(torrent_hashes=hash)
+
+def forceStartTorrent(hash: str):
+    ensure_client()
+    qb_client.torrents_forcestart(torrent_hashes=hash)
+
+def deleteTorrent(hash: str, delete_files: bool=False):
+    ensure_client()
+    qb_client.torrents_delete(torrent_hashes=hash, delete_files=delete_files)
