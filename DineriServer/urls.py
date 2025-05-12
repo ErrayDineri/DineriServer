@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('streaming.urls')),
     path('', include('torrenting.urls')),
+    path('', include('scraping.urls')),
 ]
