@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container mt-5 mb-5">
+    <div class="glass-card mx-auto" style="max-width:800px;">
+        <h1 class="h4 text-center mb-4 text-white">🎞️ Watching: {{ filename }}</h1>
+
+        <!-- Plyr expects a class="plyr__video-embed" or plyr plyr--video -->
+        <video id="player" class="plyr__video-embed" controls crossorigin playsinline
+            data-poster="{% static 'placeholder.jpg' %}">
+            <!-- Your MP4 source -->
+            <source src="{% url 'video-stream' filename=filename %}" type="video/mp4" />
+
+            <!-- Example external subtitles track (WebVTT) -->
+            <track kind="subtitles" label="English" srclang="en" src="/static/subtitles/{{ filename }}.en.vtt"
+                default />
+            <!-- Add more <track> tags here for other languages -->
+        </video>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ block.super }}
+<script>
+    // Initialize Plyr
+    const player = new Plyr('#player', {
+        captions: {
+            active: true,
+            language: 'en'
+        },
+        controls: [
+            'play-large', // The large play button in the center
+            'play', 'progress', 'current-time', 'mute', 'volume',
+            'settings', 'captions', 'fullscreen'
+        ],
+        settings: ['captions', 'quality', 'speed'],
+        quality: {
+            default: auto,
+            options: [2160, 1440, 1080, 720, 480, 360]
+        }
+    });
+</script>
+{% endblock %}
