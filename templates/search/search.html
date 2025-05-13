@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4 text-white">Search Torrents</h1>
+
+    <!-- Bulk Download Button -->
+    <button id="bulkDownloadBtn" class="btn btn-danger mb-3" disabled>⬇ Bulk Download</button>
+
+    <!-- Controls: Filter by Source & Sort -->
+    <div class="d-flex mb-3">
+        <select id="filterSource" class="form-select form-select-sm me-2" style="width:auto;">
+            <option value="all">All Sources</option>
+            {% for src in sources %}
+            <option value="{{ src }}">{{ src }}</option>
+            {% endfor %}
+        </select>
+        <select id="sortBy" class="form-select form-select-sm me-2" style="width:auto;">
+            <option value="seeders">Seeds</option>
+            <option value="leechers">Leechers</option>
+            <option value="size">Size</option>
+            <option value="title">Name</option>
+        </select>
+        <button id="sortDirBtn" class="btn btn-sm btn-light">⬇️</button>
+    </div>
+
+    <!-- Search Input -->
+    <div class="input-group mb-3">
+        <input type="text" id="searchQuery" class="form-control form-control-sm" placeholder="Search Torrents..." />
+        <button id="searchBtn" class="btn btn-sm btn-light">🔍</button>
+    </div>
+
+    <!-- Scroll Container -->
+    <div id="scrollArea" style="max-height:600px; overflow-y:auto;">
+        <ul id="contentArea" class="list-unstyled mb-0">
+            <!-- rows injected here -->
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let allResults = [],
+        isLoading = false;
+    const selected = new Set();
+    let sortAsc = false;
+
+    function formatSize(sizeStr) {
+        const [num, unit] = sizeStr.split(' ');
+        const n = parseFloat(num) || 0;
+        if (unit === 'GB') return n * 1024;
+        if (unit === 'KB') return n / 1024;
+        return n;
+    }
+
+    function renderRow(r) {
+        const checked = selected.has(r.link) ? 'checked' : '';
+        const selClass = selected.has(r.link) ? 'bg-info text-dark' : '';
+        const logoUrl = `{% static 'sourceLogos/' %}${r.source}.png`;
+        return `
+        <li class="p-2 mb-1 text-white border-bottom border-secondary d-flex align-items-center ${selClass}" data-link="${r.link}" style="cursor:pointer;">
+            <img src="${logoUrl}" alt="${r.source}" width="24" class="me-2" />
+            <div class="flex-grow-1">
+                <h6 class="mb-1 text-truncate" title="${r.title}">${r.title}</h6>
+                <small>${r.source} • ${r.size} • 🚦 ${r.seeders}/${r.leechers}</small>
+            </div>
+        </li>`;
+    }
+
+    function getViewList() {
+        const src = $('#filterSource').val().toLowerCase();
+        let list = allResults.filter(r => src === 'all' || r.source.toLowerCase() === src);
+        const key = $('#sortBy').val();
+        list.sort((a, b) => {
+            let va, vb;
+            if (key === 'size') {
+                va = formatSize(a.size);
+                vb = formatSize(b.size);
+            } else if (key === 'seeders' || key === 'leechers') {
+                va = parseInt(a[key]) || 0;
+                vb = parseInt(b[key]) || 0;
+            } else {
+                va = a.title.toLowerCase();
+                vb = b.title.toLowerCase();
+            }
+            return sortAsc ? va - vb : vb - va;
+        });
+        return list;
+    }
+
+    function fullRender() {
+        const c = $('#contentArea');
+        c.empty();
+        const q = $('#searchQuery').val().trim();
+        if (!q) return c.append('<li class="text-center text-white">🔤 Type something to search…</li>');
+        if (isLoading) return c.append('<li class="text-center text-white">⏳ Searching…</li>');
+        if (!allResults.length) return c.append('<li class="text-center text-white">🔍 No results found</li>');
+
+        const view = getViewList();
+        if (!view.length) return c.append('<li class="text-center text-white">⚠️ No matches for this filter</li>');
+        view.forEach(r => c.append(renderRow(r)));
+    }
+
+    function doSearch() {
+        const q = $('#searchQuery').val().trim();
+        if (!q) return;
+        allResults = [];
+        selected.clear();
+        $('#bulkDownloadBtn').prop('disabled', true);
+        isLoading = true;
+        fullRender();
+
+        $.getJSON(
+            `/search/api/?query=${encodeURIComponent(q)}&filterSource=${encodeURIComponent($('#filterSource').val())}`,
+            data => {
+                allResults = data.results;
+                fullRender();
+            }).always(() => {
+            isLoading = false;
+            fullRender();
+        });
+    }
+
+    function updateBulkBtn() {
+        $('#bulkDownloadBtn').prop('disabled', selected.size === 0);
+    }
+
+    $(function () {
+        $('#sortDirBtn').on('click', () => {
+            sortAsc = !sortAsc;
+            $('#sortDirBtn').text(sortAsc ? '⬆️' : '⬇️');
+            fullRender();
+        });
+        $('#filterSource, #sortBy').on('change', fullRender);
+        $('#searchBtn').on('click', doSearch);
+        $('#searchQuery').on('keydown', e => {
+            if (e.key === 'Enter') doSearch();
+        });
+        $('#contentArea').on('click', 'li', function (e) {
+            const l = $(this).data('link');
+            selected.has(l) ? selected.delete(l) : selected.add(l);
+            updateBulkBtn();
+            $(this).toggleClass('bg-info text-dark');
+        });
+        fullRender();
+        $('#bulkDownloadBtn').on('click', function () {
+            if (selected.size === 0) return;
+            const torrents = Array.from(selected).map(link => ({
+                link
+            }));
+
+            $.ajax({
+                url: '/search/download/',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    torrents
+                }),
+                success: () => {
+                    alert('✅ Torrents sent for download.');
+                    selected.clear();
+                    updateBulkBtn();
+                    fullRender();
+                    if(confirm('Do you want to go check downloads?'))
+                    {
+                        window.location.href = "{% url 'torrent' %}";
+                    }
+                },
+                error: () => {
+                    alert('❌ Failed to send torrents for download.');
+                }
+            });
+        });
+
+    });
+</script>
+{% endblock %}
