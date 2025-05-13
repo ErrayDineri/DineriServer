@@ -84,16 +84,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">🏠 Home</a>
+                        <a class="nav-link" href="{% url 'dashboard_home' %}">🏠 Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'video-list' %}">🎥 Watch Videos</a>
+                        <a class="nav-link" href="{% url 'torrent' %}">📦 Check Torrents</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'scraper-page' %}">🕷️ Run Scraper</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'torrent-status' %}">📦 Check Torrents</a>
+                        <a class="nav-link" href="{% url 'search_view' %}">🔍 Search for Torrents</a>
                     </li>
                 </ul>
                 <button class="btn btn-outline-light ms-3" id="darkModeToggle">🌙</button>

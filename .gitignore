@@ -1,8 +1,4 @@
-*.pyc
-*.pyt
 .env
+*.pyc
+*.python
 /venv
-!/media/videos/
-media/videos/*
-.vscode/
-db.sqlite3
