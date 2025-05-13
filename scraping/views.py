@@ -1,15 +1,11 @@
 import os
-from django.conf import settings
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import TemplateView
 from django.urls import reverse
 
 from .forms import ScrapingForm
 from .scraper import scrape_all_magnets
 from torrenting.torrent import downloadTorrent
-from utils import clean_title
 
 class ScraperView(View):
     def get(self, request):

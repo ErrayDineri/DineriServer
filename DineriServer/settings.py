@@ -130,3 +130,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# Enable for production (disable in development)
+USE_X_ACCEL_REDIRECT = True
+
+# MIME type configuration
+import mimetypes
+mimetypes.add_type('video/mp4', '.mp4')
+mimetypes.add_type('video/x-matroska', '.mkv')
+mimetypes.add_type('application/x-mpegURL', '.m3u8')
