@@ -14,48 +14,56 @@ function mapState(s) {
 
 function renderRow(t) {
     return `
-        <li class="clusterize-row torrent-item" data-state="${mapState(t.state)}" id="torrent-${t.hash}">
-            <div class="torrent-card p-3 mb-3" style="background: rgba(255,255,255,0.05); border-radius: 8px;">
-                <h5 class="text-white">${t.name}</h5>
-                <div class="mb-2 text-white">
-                    Progress: <span class="progress-text">${t.progress}%</span>
-                </div>
-                <div class="progress mb-2" style="height: 18px;">
+        <li class="clusterize-row torrent-item stagger-item" data-state="${mapState(t.state)}" id="torrent-${t.hash}">
+            <div class="torrent-card dark-mode-transition">
+                <h5>${t.name}</h5>
+                <div class="progress">
                     <div class="progress-bar bg-success" role="progressbar" style="width:${t.progress}%"
                         aria-valuenow="${t.progress}" aria-valuemin="0" aria-valuemax="100">
                         ${t.progress}%
                     </div>
                 </div>
-                <p class="mb-1 text-white">
-                    <strong>State:</strong> <span class="state">${mapState(t.state)}</span>
-                </p>
-                <p class="mb-1 text-white">
-                    <strong>ETA:</strong> <span class="eta">${t.eta > 0 ? t.eta + 's' : '∞'}</span>
-                </p>
-                <p class="mb-1 text-white">
-                    <strong>DL Speed:</strong> <span class="dlspeed">${t.download_speed} MB/s</span>
-                </p>
-                <p class="mb-3 text-white">
-                    <strong>UL Speed:</strong> <span class="upspeed">${t.upload_speed} MB/s</span>
-                </p>
-                <p class="mb-1 text-white">
-                    <strong>Seeds:</strong> <span class="seeds">${t.num_seeds}</span>
-                    &nbsp;|&nbsp;
-                    <strong>Peers:</strong> <span class="peers">${t.num_peers}</span>
-                </p>
+                
+                <div class="torrent-info-group">
+                    <div class="torrent-info-item">
+                        <div class="label">State</div>
+                        <div class="value state">${mapState(t.state)}</div>
+                    </div>
+                    <div class="torrent-info-item">
+                        <div class="label">ETA</div>
+                        <div class="value eta">${t.eta > 0 ? t.eta + 's' : '∞'}</div>
+                    </div>
+                    <div class="torrent-info-item">
+                        <div class="label">Download</div>
+                        <div class="value dlspeed">${t.download_speed} MB/s</div>
+                    </div>
+                    <div class="torrent-info-item">
+                        <div class="label">Upload</div>
+                        <div class="value upspeed">${t.upload_speed} MB/s</div>
+                    </div>
+                    <div class="torrent-info-item">
+                        <div class="label">Seeds / Peers</div>
+                        <div class="value"><span class="seeds">${t.num_seeds}</span> / <span class="peers">${t.num_peers}</span></div>
+                    </div>
+                </div>
 
                 <!-- Buttons -->
-                <div class="mt-2 d-flex flex-wrap gap-2">
-                    <button class="btn btn-outline-warning btn-sm btn-action pause" data-hash="${t.hash}">⏸
-                        Pause</button>
-                    <button class="btn btn-outline-success btn-sm btn-action resume" data-hash="${t.hash}">▶
-                        Resume</button>
-                    <button class="btn btn-outline-info btn-sm btn-action force" data-hash="${t.hash}">⏩ Force
-                        Start</button>
-                    <button class="btn btn-danger btn-sm btn-action delete-files" data-hash="${t.hash}">🗑
-                        Delete+Files</button>
-                    <button class="btn btn-outline-danger btn-sm btn-action delete" data-hash="${t.hash}">🗑
-                        Remove</button>
+                <div class="mt-2 d-flex flex-wrap">
+                    <button class="btn btn-outline-warning btn-sm btn-action pause" data-hash="${t.hash}">
+                        <i class="fas fa-pause"></i> Pause
+                    </button>
+                    <button class="btn btn-outline-success btn-sm btn-action resume" data-hash="${t.hash}">
+                        <i class="fas fa-play"></i> Resume
+                    </button>
+                    <button class="btn btn-outline-info btn-sm btn-action force" data-hash="${t.hash}">
+                        <i class="fas fa-bolt"></i> Force Start
+                    </button>
+                    <button class="btn btn-danger btn-sm btn-action delete-files" data-hash="${t.hash}">
+                        <i class="fas fa-trash-alt"></i> Delete+Files
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm btn-action delete" data-hash="${t.hash}">
+                        <i class="fas fa-times"></i> Remove
+                    </button>
                 </div>
             </div>
         </li>`;

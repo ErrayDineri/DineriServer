@@ -3,56 +3,60 @@
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="mb-4 text-white">Search Torrents</h1>
+    <div class="page-container fade-in dark-mode-transition">
+        <h1 class="mb-4 text-white">Search Torrents</h1>        <!-- Action Bar -->
+        <div class="action-bar slide-in-left">
+            <div class="dropdown me-2">                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="sourceFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" data-bs-offset="0,10">
+                    Sources
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark source-dropdown" id="sourceFilterMenu" aria-labelledby="sourceFilterDropdown" data-bs-popper="static">
+                    <li>
+                        <div class="form-check ms-2">
+                            <input class="form-check-input source-filter-option" type="checkbox" value="all" id="sourceAll" {% if 'all' in filter_sources %}checked{% endif %}>
+                            <label class="form-check-label" for="sourceAll">All Sources</label>
+                        </div>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    {% for src in sources %}
+                    <li>
+                        <div class="form-check ms-2">
+                            <input class="form-check-input source-filter-option" type="checkbox" value="{{ src }}" id="source{{ src|slugify }}" {% if src in filter_sources %}checked{% endif %}>
+                            <label class="form-check-label" for="source{{ src|slugify }}">{{ src }}</label>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>        
+            <select id="sortBy" class="form-select form-select-sm me-2" style="width:auto;">
+                <option value="seeders">Seeds</option>
+                <option value="leechers">Leechers</option>
+                <option value="size">Size</option>
+                <option value="title">Name</option>
+            </select>
+            <button id="sortDirBtn" class="btn btn-sm btn-light me-2">📉</button>
+            <button id="downloadAllBtn" class="btn btn-primary btn-sm me-2">⬇ Download All</button>
+            <button id="bulkDownloadBtn" class="btn btn-danger btn-sm me-2" disabled>⬇ Download Selected</button>
+        </div>
 
-    <!-- Download Button -->    <div class="d-flex mb-3">
-        <div class="dropdown me-2">
-            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="sourceFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                Sources
+        <!-- Search Input -->
+        <div class="input-group mb-3 search-container">        
+            <span class="input-group-text bg-dark border-secondary">
+                <i class="fas fa-search text-white"></i>
+            </span>
+            <input type="text" id="searchQuery" class="form-control form-control-sm bg-dark text-white border-secondary" 
+                placeholder="Search Torrents..." autocomplete="off" value="{{ initial_query }}" />
+            <button id="clearSearchBtn" class="btn btn-sm btn-outline-secondary" type="button" style="display: none;">
+                <i class="fas fa-times"></i>
             </button>
-            <ul class="dropdown-menu dropdown-menu-dark" id="sourceFilterMenu" aria-labelledby="sourceFilterDropdown">
-                <li>
-                    <div class="form-check ms-2">
-                        <input class="form-check-input source-filter-option" type="checkbox" value="all" id="sourceAll" {% if 'all' in filter_sources %}checked{% endif %}>
-                        <label class="form-check-label" for="sourceAll">All Sources</label>
-                    </div>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                {% for src in sources %}
-                <li>
-                    <div class="form-check ms-2">
-                        <input class="form-check-input source-filter-option" type="checkbox" value="{{ src }}" id="source{{ src|slugify }}" {% if src in filter_sources %}checked{% endif %}>
-                        <label class="form-check-label" for="source{{ src|slugify }}">{{ src }}</label>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>        <select id="sortBy" class="form-select form-select-sm me-2" style="width:auto;">
-            <option value="seeders">Seeds</option>
-            <option value="leechers">Leechers</option>
-            <option value="size">Size</option>
-            <option value="title">Name</option>
-        </select>
-        <button id="sortDirBtn" class="btn btn-sm btn-light me-2">📉</button>
-        <button id="downloadAllBtn" class="btn btn-primary btn-sm me-2">⬇ Download All</button>
-        <button id="bulkDownloadBtn" class="btn btn-danger btn-sm me-2" disabled>⬇ Download Selected</button>
-    </div><!-- Search Input -->
-    <div class="input-group mb-3 search-container">        <span class="input-group-text bg-dark border-secondary">
-            <i class="fas fa-search text-white"></i>
-        </span>
-        <input type="text" id="searchQuery" class="form-control form-control-sm bg-dark text-white border-secondary" 
-            placeholder="Search Torrents..." autocomplete="off" value="{{ initial_query }}" />
-        <button id="clearSearchBtn" class="btn btn-sm btn-outline-secondary" type="button" style="display: none;">
-            <i class="fas fa-times"></i>
-        </button>
-        <button id="searchBtn" class="btn btn-sm btn-primary">Search</button>
-    </div>
+            <button id="searchBtn" class="btn btn-sm btn-primary">Search</button>
+        </div>
 
-    <!-- Scroll Container -->
-    <div id="scrollArea" style="max-height:600px; overflow-y:auto;">
-        <ul id="contentArea" class="list-unstyled mb-0">
-            <!-- rows injected here -->
-        </ul>
+        <!-- Scroll Container -->
+        <div id="scrollArea">
+            <ul id="contentArea" class="list-unstyled mb-0">
+                <!-- rows injected here -->
+            </ul>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -66,6 +70,7 @@
     const STATIC_URL = "{% static '' %}";
     const TORRENTS_URL = "{% url 'torrent' %}";
 </script>
+<script src="{% static 'js/dropdown-fix.js' %}"></script>
 <script src="{% static 'js/search.js' %}"></script>
 
 <!-- ALERT MODAL -->

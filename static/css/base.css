@@ -1,21 +1,46 @@
 /* Main styling for Dineri Server */
+:root {
+    --bg-gradient-light: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    --bg-gradient-dark: linear-gradient(135deg, #121212, #1e1e1e, #2d2d2d);
+    --card-bg-light: rgba(255, 255, 255, 0.1);
+    --card-bg-dark: rgba(0, 0, 0, 0.2);
+    --text-color: #f8f9fa;
+    --transition-speed: 0.3s;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Apply dark mode immediately before page load to prevent flash */
+.dark-mode-preload {
+    background: var(--bg-gradient-dark) !important;
+    color: var(--text-color) !important;
+    transition: none !important;
+}
+
+/* Remove preload class once page has loaded */
+.dark-mode-preload body {
+    background: var(--bg-gradient-dark);
+}
+
 body {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: #f8f9fa;
+    background: var(--bg-gradient-light);
+    color: var(--text-color);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    transition: background 0.5s ease;
+    transition: background var(--transition-speed) ease;
 }
 
 .glass-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg-light);
     backdrop-filter: blur(12px);
     border-radius: 1rem;
     padding: 3rem 2rem;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     text-align: center;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background var(--transition-speed) ease;
 }
 
 .glass-card h1 {
@@ -35,11 +60,11 @@ body {
 }
 
 body.dark-mode {
-    background: linear-gradient(135deg, #1e1e1e, #2b2b2b, #3a3a3a);
+    background: var(--bg-gradient-dark);
 }
 
 .glass-card.dark-mode {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--card-bg-dark);
     backdrop-filter: blur(12px);
 }
 

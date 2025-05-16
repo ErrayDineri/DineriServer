@@ -1,0 +1,54 @@
+/* Reduced motion styles for better performance */
+
+/* Global reduced motion setting */
+.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  animation-delay: 0ms !important;
+}
+
+/* More targeted approach for common animations */
+.reduced-motion .fade-in,
+.reduced-motion .slide-in-left,
+.reduced-motion .slide-in-right,
+.reduced-motion .zoom-in,
+.reduced-motion .stagger-item {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Also respect user's system preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Keep essential transitions for usability */
+.reduced-motion .dark-mode-transition {
+  transition: background-color 0.1s linear, color 0.1s linear !important;
+}
+
+/* Optimize scrolling */
+.reduced-motion #scrollArea {
+  scroll-behavior: auto !important;
+}
+
+/* Better scrolling for all users */
+.content-container {
+  overscroll-behavior: contain;
+}
+
+/* Fix for staggered item opacity */
+.reduced-motion .stagger-item {
+  opacity: 1 !important;
+}
