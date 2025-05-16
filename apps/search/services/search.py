@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from .scraperPirateBay import make_magnet
 from .scrape import scrape1337x, souper, souperCloud, get_size_only
-availableSources = ['Nyaa', 'The Pirate Bay', '1337x']
+
 def searchNyaa(searchTerm):
     base_url = f"https://nyaa.si/?f=0&c=0_0&q={searchTerm}"
     soup=souper(base_url)
@@ -68,13 +68,21 @@ def searchAll(searchTerm):
     results.extend(search1337x(searchTerm))
     return results
 
+availableSources = ['Nyaa', 'The Pirate Bay', '1337x']
+mapper={
+    'Nyaa': searchNyaa,
+    'The Pirate Bay': searchTPB,
+    '1337x': search1337x
+}
 def searchBySource(searchTerm, source):
-    if source == 'Nyaa':
-        return searchNyaa(searchTerm)
-    elif source == 'The Pirate Bay':
-        return searchTPB(searchTerm)
-    elif source == '1337x':
-        return search1337x(searchTerm)
+    if isinstance(source, list):
+        res = []
+        for s in source:
+            if s in availableSources:
+                res.extend(mapper[s](searchTerm))
+        return res
+    elif source in availableSources:
+        return mapper[source](searchTerm=searchTerm)
     else:
         raise ValueError("Invalid source specified.")
 if __name__ == "__main__":

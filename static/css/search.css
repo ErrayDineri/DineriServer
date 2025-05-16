@@ -1,0 +1,30 @@
+/* Search page specific styling */
+.search-container {
+    max-width: 100%;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#searchQuery:focus {
+    box-shadow: none;
+    border-color: var(--bs-primary) !important;
+}
+
+.search-container .form-control::placeholder {
+    opacity: 0.7;
+}
+
+.search-results-highlight {
+    transition: all 0.3s ease;
+    border-left: 3px solid var(--bs-primary) !important;
+}
+
+.torrent-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
+}
