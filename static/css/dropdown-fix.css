@@ -1,0 +1,60 @@
+/* Bootstrap dropdown fixes for z-index issues */
+
+/* Global fix for all dropdown menus */
+.dropdown-menu {
+    z-index: 9999 !important;
+}
+
+/* Fix for showing state */
+.dropdown-menu.show {
+    z-index: 9999 !important;
+    display: block !important;
+}
+
+/* Fix for Popper positioning */
+.dropdown-menu[data-bs-popper] {
+    z-index: 9999 !important;
+}
+
+/* Our custom dropdown class */
+.source-dropdown {
+    z-index: 9999 !important;
+    position: fixed !important; /* Changed from absolute to fixed */
+}
+
+/* Fix for Bootstrap modals and dropdowns */
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal {
+    z-index: 1050 !important;
+}
+
+/* Global fix for modal-open body class to ensure dropdowns stay visible */
+body.modal-open .dropdown-menu {
+    z-index: 2060 !important;
+}
+
+/* Ensure the scrollArea doesn't interfere with dropdowns */
+#scrollArea {
+    z-index: 1 !important;
+}
+
+/* Ensure the action bar containing the dropdown has a higher z-index than scrollArea */
+.action-bar {
+    position: relative;
+    z-index: 1020 !important;
+}
+
+/* Apply to all dropdown triggers to ensure they maintain proper stacking */
+[data-bs-toggle="dropdown"] {
+    position: relative;
+    z-index: 1025 !important;
+}
+
+/* Create a portal for dropdowns if they're moved to body */
+body > .dropdown-menu {
+    position: fixed !important;
+    z-index: 9999 !important;
+}

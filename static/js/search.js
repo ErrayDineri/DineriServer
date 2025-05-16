@@ -17,7 +17,7 @@ function renderRow(r) {
     const sel = selected.has(r.link) ? 'bg-info bg-opacity-75 text-dark' : '';
     const logo = `${STATIC_URL}sourceLogos/${r.source}.png`;
     return `
-    <li class="p-2 mb-2 text-white border border-secondary rounded d-flex align-items-center ${sel} search-results-highlight"
+    <li class="p-2 mb-2 text-white border border-secondary rounded d-flex align-items-center ${sel} search-results-highlight stagger-item"
         data-link="${r.link}" style="cursor:pointer;">
       <img src="${logo}" width="24" class="me-2" alt="${r.source} logo"/>
       <div class="flex-grow-1" style="min-width: 0;">
@@ -68,6 +68,8 @@ function fullRender() {
         return $c.append('<li class="text-center text-white p-4"><div class="spinner-border text-light mb-3" role="status"><span class="visually-hidden">Loading...</span></div><p>Searching for "' + q + '"...</p></li>');
     }
     
+    // Performance optimization: Use DocumentFragment for batch DOM operations    const fragment = document.createDocumentFragment();
+    
     if (!allResults.length) {
         $('#downloadAllBtn').prop('disabled', true).text('⬇ Download All');
         return $c.append('<li class="text-center text-white p-4"><i class="fas fa-exclamation-circle fa-2x mb-3"></i><p>No results found for "' + q + '"</p></li>');
@@ -82,19 +84,36 @@ function fullRender() {
     // Update download all button
     $('#downloadAllBtn').prop('disabled', false).text(`⬇ Download All (${view.length})`);
     
-    view.forEach(r => $c.append(renderRow(r)));
+    // Performance optimization: Batch DOM insertions
+    const tempDiv = document.createElement('div');
+    const html = view.map(r => renderRow(r)).join('');
+    tempDiv.innerHTML = html;
+    
+    // Add items to fragment
+    while (tempDiv.firstChild) {
+        fragment.appendChild(tempDiv.firstChild);
+    }
+      // Single DOM append for all elements
+    $c[0].appendChild(fragment);
 }
 
+// Search with debounce for improved performance
+let searchTimeout;
 function doSearch() {
     const q = $('#searchQuery').val().trim();
     if (!q) return;
     
-    // Show search in progress
-    allResults = [];
-    selected.clear();
-    $('#bulkDownloadBtn').prop('disabled', true);
-    isLoading = true;
-    fullRender();
+    // Clear any existing timeout
+    clearTimeout(searchTimeout);
+    
+    // Set a short timeout to prevent multiple rapid searches
+    searchTimeout = setTimeout(() => {
+        // Show search in progress
+        allResults = [];
+        selected.clear();
+        $('#bulkDownloadBtn').prop('disabled', true);
+        isLoading = true;
+        fullRender();
     
     // Add loading indicator to search button
     const $searchBtn = $('#searchBtn');

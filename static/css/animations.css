@@ -1,0 +1,131 @@
+/* Animations for Dineri Server */
+
+/* Page transition animations - optimized for performance */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Apply animations to elements - shorter durations */
+.fade-in {
+    animation: fadeIn 0.3s ease forwards;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+.slide-in-right {
+    animation: slideInRight 0.25s ease forwards;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.25s ease forwards;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+.zoom-in {
+    animation: zoomIn 0.3s ease forwards;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+/* Staggered animations for lists - optimized */
+.stagger-item {
+    opacity: 0;
+}
+
+/* Reduce number of unique animations and simplify delays */
+.stagger-item:nth-child(1) { animation: fadeIn 0.2s ease forwards; }
+.stagger-item:nth-child(2) { animation: fadeIn 0.2s ease 0.05s forwards; }
+.stagger-item:nth-child(3) { animation: fadeIn 0.2s ease 0.1s forwards; }
+.stagger-item:nth-child(4) { animation: fadeIn 0.2s ease 0.15s forwards; }
+.stagger-item:nth-child(n+5) { animation: fadeIn 0.2s ease 0.2s forwards; }
+
+/* Hover effects */
+.pulse-on-hover {
+    transition: all 0.3s ease;
+}
+
+.pulse-on-hover:hover {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+.shine-on-hover {
+    position: relative;
+    overflow: hidden;
+}
+
+.shine-on-hover::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    animation: shine 4s infinite linear;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.shine-on-hover:hover::after {
+    opacity: 1;
+}
+
+@keyframes shine {
+    0% { transform: rotate(30deg) translateX(-100%); }
+    100% { transform: rotate(30deg) translateX(100%); }
+}
+
+/* Loading animation */
+.loading-spinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--bs-primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Dark mode transition */
+.dark-mode-transition {
+    transition: background 0.5s ease,
+                background-color 0.5s ease,
+                border-color 0.5s ease,
+                color 0.5s ease,
+                box-shadow 0.5s ease;
+}

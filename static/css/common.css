@@ -1,0 +1,182 @@
+/* Enhanced styling for Dineri Server */
+
+/* Navigation bar improvements */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    background-color: rgba(33, 37, 41, 0.9) !important;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.nav-link {
+    position: relative;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    transform: translateY(-2px);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--bs-primary);
+    transition: width 0.3s;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Main content improvements */
+main {
+    padding-top: 5.5rem;
+    padding-bottom: 2rem;
+}
+
+.glass-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 80%);
+    transform: rotate(30deg);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glass-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Buttons styling */
+.btn {
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Dark mode toggle button enhancement */
+#darkModeToggle, #performanceToggle {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    margin-left: 0.5rem;
+}
+
+#darkModeToggle:hover, #performanceToggle:hover {
+    transform: rotate(30deg);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Container for pages */
+.page-container {
+    padding: 2rem;
+    border-radius: 1rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Progress bars */
+.progress {
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.progress-bar {
+    transition: width 0.5s ease, background-color 0.3s ease;
+}
+
+/* Card hover effects */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark mode specific styles */
+body.dark-mode .navbar {
+    background-color: rgba(10, 10, 10, 0.9) !important;
+}
+
+body.dark-mode .page-container {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .progress {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Mobile-friendly adjustments */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    
+    .page-container {
+        padding: 1rem;
+    }
+    
+    .glass-card {
+        padding: 2rem 1rem;
+    }
+}

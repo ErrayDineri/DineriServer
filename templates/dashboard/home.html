@@ -1,9 +1,20 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="glass-card">
-    <h1>🎬 Welcome to Dineri Server</h1>
-    <div class="d-grid gap-3">
+<div class="container py-4">
+    <div class="glass-card hover-lift zoom-in">
+        <h1>🎬 Welcome to Dineri Server</h1>
+        <p class="lead mb-4">Your all-in-one media management platform</p>
+        
+        <div class="d-grid gap-4 col-lg-8 mx-auto">
+            <a href="{% url 'search_view' %}" class="btn btn-primary btn-lg stagger-item shine-on-hover">
+                <i class="fas fa-search me-2"></i> Search Torrents
+            </a>
+            <a href="{% url 'torrent' %}" class="btn btn-success btn-lg stagger-item shine-on-hover">
+                <i class="fas fa-download me-2"></i> Manage Downloads
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}

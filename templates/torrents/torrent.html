@@ -3,28 +3,31 @@
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="mb-4 text-white">Torrent Status</h1>
-    
-    {% csrf_token %}
+    <div class="page-container slide-in-left dark-mode-transition">
+        <h1 class="mb-4 text-white">Torrent Status</h1>
+        
+        {% csrf_token %}
 
-    <!-- State Filter Buttons -->
-    <div class="btn-group mb-3">
-        <button class="btn btn-primary" onclick="applyFilter('all')">All</button>
-        <button class="btn btn-success" onclick="applyFilter('downloading')">Downloading</button>
-        <button class="btn btn-warning" onclick="applyFilter('queuedDL')">Unstarted</button>
-        <button class="btn btn-secondary" onclick="applyFilter('finished')">Finished</button>
-    </div>
+        <!-- State Filter Buttons -->
+        <div class="btn-group filter-buttons mb-3">
+            <button class="btn btn-primary" onclick="applyFilter('all')">All</button>
+            <button class="btn btn-success" onclick="applyFilter('downloading')">Downloading</button>
+            <button class="btn btn-warning" onclick="applyFilter('queuedDL')">Unstarted</button>
+            <button class="btn btn-secondary" onclick="applyFilter('finished')">Finished</button>
+        </div>
 
-    <!-- Virtual-Scroll Container -->
-    <div id="scrollArea" class="clusterize-scroll" style="max-height:600px; overflow-y:auto;">
-        <ul id="contentArea" class="clusterize-content list-unstyled mb-0">
-            <!-- rows injected here -->
-        </ul>
+        <!-- Virtual-Scroll Container -->
+        <div id="scrollArea" class="clusterize-scroll fade-in">
+            <ul id="contentArea" class="clusterize-content list-unstyled mb-0">
+                <!-- rows injected here -->
+            </ul>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
+<link rel="stylesheet" href="{% static 'css/torrents.css' %}">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/clusterize.js@0.18.1/clusterize.min.js"></script>
 <script>
