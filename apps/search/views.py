@@ -9,9 +9,17 @@ from apps.torrents.services.utils import downloadTorrent
 
 
 def search_view(request):
+    # Get query parameter if it exists (for navbar search)
+    query = request.GET.get('query', '').strip()
+    filter_source = request.GET.get('filterSource', 'all')
+    
     # Pass available sources into template context
     sources = availableSources  # e.g. ['SiteA', 'SiteB', ...]
-    return render(request, 'search/search.html', {'sources': sources})
+    return render(request, 'search/search.html', {
+        'sources': sources, 
+        'initial_query': query,
+        'filter_source': filter_source
+    })
 
 @require_GET
 def search_api(request):

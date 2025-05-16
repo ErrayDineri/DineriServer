@@ -43,7 +43,8 @@ def detect_qbittorrent_path():
     return None
 qbittorrent_path = detect_qbittorrent_path()
 
-DOWNLOAD_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'media', 'videos'))
+# Path to the media directory in the project root
+DOWNLOAD_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'media', 'videos'))
 
 # Global client
 qb_client = None
