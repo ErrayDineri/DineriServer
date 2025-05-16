@@ -4,9 +4,9 @@ import subprocess
 import psutil
 import time
 import environ
-import os
 import platform
 import shutil
+import requests  # Added for check_qbittorrent_webui function
 
 env = environ.Env()
 environ.Env.read_env()  # This reads the .env file
@@ -51,36 +51,98 @@ qb_client = None
 
 def start_qbittorrent():
     if not qbittorrent_path:
-        raise EnvironmentError("The 'qbittorrentPATH' variable is not set in the .env file.")
+        raise EnvironmentError("qBittorrent path not found. Please install qBittorrent.")
 
+    # Check if qBittorrent is already running
     for proc in psutil.process_iter(['name']):
         if proc.info['name'] and 'qbittorrent' in proc.info['name'].lower():
-            return  # Already running
+            print("qBittorrent is already running")
+            return True  # Already running
 
-    print("Starting qBittorrent...")
-    subprocess.Popen([qbittorrent_path, "--webui-port=8090"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    time.sleep(3)  # Wait for Web UI to start
+    print(f"Starting qBittorrent from: {qbittorrent_path}...")
+    try:
+        subprocess.Popen([qbittorrent_path, "--webui-port=8090"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print("qBittorrent process started, waiting for WebUI to initialize...")
+        
+        # Wait for qBittorrent to start up properly
+        time.sleep(3)  
+        
+        # Verify it's running
+        for proc in psutil.process_iter(['name']):
+            if proc.info['name'] and 'qbittorrent' in proc.info['name'].lower():
+                print("qBittorrent is now running")
+                return True
+                
+        print("Failed to verify qBittorrent is running")
+        return False
+    except Exception as e:
+        print(f"Error starting qBittorrent: {e}")
+        return False
 
 def init_client():
     global qb_client
-    start_qbittorrent()
-
-    client = qbittorrentapi.Client(host=QB_HOST)
     try:
-        client.auth_log_in()
-    except qbittorrentapi.LoginFailed as e:
-        raise RuntimeError(f"Login to qBittorrent failed: {e}")
-    
-    qb_client = client
+        # Start qBittorrent if not already running
+        qbittorrent_started = start_qbittorrent()
+        if not qbittorrent_started:
+            print("Failed to start qBittorrent, cannot proceed")
+            return False
+            
+        # Try to connect with default credentials (no username/password)
+        print(f"Connecting to qBittorrent WebUI at {QB_HOST}...")
+        client = qbittorrentapi.Client(host=QB_HOST)
+        
+        # Try to log in (default is admin/adminadmin)
+        try:
+            client.auth_log_in(username="admin", password="adminadmin")
+        except:
+            # Try without credentials - some installations don't require them
+            try:
+                client.auth_log_in()
+            except Exception as e:
+                print(f"Authentication failed: {e}")
+                print("Make sure WebUI is enabled in qBittorrent settings with correct credentials")
+                return False
+        
+        print("Successfully connected and logged in to qBittorrent WebUI")
+        qb_client = client
+        return True
+    except Exception as e:
+        print(f"Error initializing qBittorrent client: {e}")
+        return False
 
 def ensure_client():
     global qb_client
+    
+    # If client doesn't exist, initialize it
     if qb_client is None:
-        init_client()
+        print("qBittorrent client not initialized, initializing...")
+        success = init_client()
+        if not success:
+            raise RuntimeError("Failed to initialize qBittorrent client")
+        return
+    
+    # Test if existing client is still connected
     try:
-        qb_client.app_version()
-    except qbittorrentapi.APIConnectionError:
-        init_client()
+        version = qb_client.app_version()
+        print(f"Connected to qBittorrent {version}")
+    except Exception as e:
+        print(f"Error connecting to qBittorrent: {e}, reinitializing...")
+        success = init_client()
+        if not success:
+            raise RuntimeError("Failed to reinitialize qBittorrent client")
+            
+# Add a helper function to check WebUI status
+def check_qbittorrent_webui():
+    """Check if qBittorrent WebUI is running and accessible"""
+    try:
+        url = f"http://{QB_HOST}/api/v2/app/version"
+        response = requests.get(url, timeout=2)
+        if response.status_code == 200:
+            return True
+    except:
+        pass
+    return False
 
 def downloadTorrent(link: str):
     ensure_client()

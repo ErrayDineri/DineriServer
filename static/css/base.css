@@ -1,0 +1,58 @@
+/* Main styling for Dineri Server */
+body {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.5s ease;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border-radius: 1rem;
+    padding: 3rem 2rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.glass-card h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.btn-custom {
+    font-size: 1.2rem;
+    padding: 0.75rem 2rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+    transform: scale(1.05);
+}
+
+body.dark-mode {
+    background: linear-gradient(135deg, #1e1e1e, #2b2b2b, #3a3a3a);
+}
+
+.glass-card.dark-mode {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(12px);
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 5rem;
+}
+
+.logo-icon {
+    height: 24px;
+    width: 24px;
+    margin: 0 8px;
+}
