@@ -12,6 +12,35 @@ function mapState(s) {
     return s;
 }
 
+/**
+ * Formats seconds into a human-readable time format (Xh Ym Zs)
+ * Only shows units that are non-zero (e.g., won't show hours if 0)
+ * @param {number} seconds - Total seconds
+ * @return {string} Formatted time string
+ */
+function formatETA(seconds) {
+    if (!seconds || seconds < 0) return '∞';
+    if (seconds === 0) return 'Complete';
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    let result = '';
+    
+    if (hours > 0) {
+        result += `${hours}h `;
+    }
+    
+    if (minutes > 0 || hours > 0) {
+        result += `${minutes}m `;
+    }
+    
+    result += `${secs}s`;
+    
+    return result.trim();
+}
+
 function renderRow(t) {
     return `
         <li class="clusterize-row torrent-item stagger-item" data-state="${mapState(t.state)}" id="torrent-${t.hash}">
@@ -31,7 +60,7 @@ function renderRow(t) {
                     </div>
                     <div class="torrent-info-item">
                         <div class="label">ETA</div>
-                        <div class="value eta">${t.eta > 0 ? t.eta + 's' : '∞'}</div>
+                        <div class="value eta">${formatETA(t.eta)}</div>
                     </div>
                     <div class="torrent-info-item">
                         <div class="label">Download</div>
@@ -123,7 +152,7 @@ function updateTorrents() {
             pb.css('width', `${upd.progress}%`).text(`${upd.progress}%`);
             card.find('.progress-text').text(`${upd.progress}%`);
             card.find('.state').text(mapState(upd.state));
-            card.find('.eta').text(upd.eta > 0 ? `${upd.eta}s` : '∞');
+            card.find('.eta').text(formatETA(upd.eta));
             card.find('.dlspeed').text(`${upd.download_speed} MB/s`);
             card.find('.upspeed').text(`${upd.upload_speed} MB/s`);
         });
