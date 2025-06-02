@@ -10,7 +10,7 @@
       <i class="fas fa-film me-3" style="font-size: 1.8rem;"></i>
       <h1 class="m-0">Available Videos</h1>
     </div>
-    
+
     {% if videos %}
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for video in videos %}
@@ -18,9 +18,14 @@
             <div class="video-item">
               <a href="{% url 'stream' video_name=video.name %}" class="video-link">
                 <div class="video-card">
-                  <div class="video-icon">
-                    <i class="fas fa-play-circle"></i>
-                  </div>
+                  <!-- If a thumbnail exists, show it -->
+                  {% if video.thumbnail_url %}
+                    <img
+                      src="{{ video.thumbnail_url }}"
+                      alt="{{ video.name }} thumbnail"
+                      class="video-thumbnail mb-2"
+                      style="width: 100%; height: auto; border-radius: 5px;">
+                  {% endif %}
                   <div class="video-details">
                     <h5>{{ video.name }}</h5>
                   </div>
@@ -31,7 +36,7 @@
         {% endfor %}
       </div>
     {% else %}
-      <div class="empty-state">
+      <div class="empty-state text-center">
         <i class="fas fa-film mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
         <p class="lead">No videos available.</p>
       </div>

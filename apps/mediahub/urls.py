@@ -1,4 +1,5 @@
-# urls.py
+# apps/mediahub/urls.py
+
 from django.urls import path
 from . import views
 

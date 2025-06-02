@@ -10,7 +10,18 @@
       <i class="fas fa-film me-3" style="font-size: 1.8rem;"></i>
       <h2 class="m-0">Streaming: {{ video_name }}</h2>
     </div>
-    
+
+    {% if audio_tracks %}
+    <div class="mb-3">
+      <strong>Audio Tracks:</strong>
+      <ul>
+        {% for audio in audio_tracks %}
+        <li>{{ audio.label }} — {{ audio.codec }} ({{ audio.channels }} channels)</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
     <div class="video-container">
       <!-- Video.js player -->
       <video
@@ -24,14 +35,14 @@
         
         <source src="{{ video_url }}" type="application/x-mpegURL" />
 
-        {% if subtitles_url %}
+        {% for sub in subtitles %}
         <track
           kind="subtitles"
-          src="{{ subtitles_url }}"
-          srclang="en"
-          label="English"
-          default>
-        {% endif %}
+          src="{{ sub.url }}"
+          srclang="{{ sub.lang }}"
+          label="{{ sub.label }}"
+          {% if forloop.first %}default{% endif %}>
+        {% endfor %}
         
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to a
