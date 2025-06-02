@@ -21,7 +21,7 @@ Dineri Server is a self-hosted media management platform that combines torrent s
 ### 🎬 Media Organization
 - Automatically stores downloaded content in an organized media library
 - Supports video files and other media types
-- Automatic media conversion to MP4/AAC format for compatibility
+- Automatic media conversion to HLS format for compatibility
 - Clean, modern UI for browsing your content
 
 ### 🎨 User Experience
