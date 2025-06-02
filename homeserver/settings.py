@@ -27,22 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
-# Application definition
-
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'apps.dashboard',
-    'apps.mediahub',
-    'apps.torrents',
-    'apps.search',
-]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -139,3 +123,38 @@ SESSION_COOKIE_SECURE = False
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Application definition
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'apps.dashboard',
+    'apps.mediahub',
+    'apps.torrents',
+    'apps.search',
+]
+
+# Celery configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # or 'redis://redis:6379/0' in Docker
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# Optional (recommended)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+# Required for periodic tasks
+INSTALLED_APPS += ['django_celery_beat']
+from datetime import timedelta
+
+CELERY_BEAT_SCHEDULE = {
+    'convert-media-every-30-seconds': {
+        'task': 'apps.mediahub.tasks.convert_media_files',
+        'schedule': timedelta(seconds=10),  # run every 30 seconds
+        'args': (),
+    },
+}
