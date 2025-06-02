@@ -1,38 +1,52 @@
 <!-- templates/mediahub/stream.html -->
 
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<h2>Streaming: {{ video_name }}</h2>
+<div class="container py-4">
+  <div class="glass-card mb-4">
+    <div class="d-flex align-items-center mb-4">
+      <i class="fas fa-film me-3" style="font-size: 1.8rem;"></i>
+      <h2 class="m-0">Streaming: {{ video_name }}</h2>
+    </div>
+    
+    <div class="video-container">
+      <!-- Video.js player -->
+      <video
+        id="video-player"
+        class="video-js vjs-default-skin vjs-big-play-centered shadow"
+        controls
+        preload="auto"
+        width="100%"
+        height="auto"
+        data-setup='{"fluid": true, "responsive": true, "playbackRates": [0.5, 1, 1.25, 1.5, 2]}'>
+        
+        <source src="{{ video_url }}" type="application/x-mpegURL" />
 
+        {% if subtitles_url %}
+        <track
+          kind="subtitles"
+          src="{{ subtitles_url }}"
+          srclang="en"
+          label="English"
+          default>
+        {% endif %}
+        
+        <p class="vjs-no-js">
+          To view this video please enable JavaScript, and consider upgrading to a
+          web browser that supports HTML5 video.
+        </p>
+      </video>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
 <!-- Video.js CSS & JS -->
 <link href="https://vjs.zencdn.net/8.9.0/video-js.css" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/video-player.css' %}">
 <script src="https://vjs.zencdn.net/8.9.0/video.min.js"></script>
-
-<video
-  id="video-player"
-  class="video-js vjs-default-skin vjs-big-play-centered"
-  controls
-  preload="auto"
-  width="800"
-  height="450"
-  data-setup='{"fluid": true}'>
-  
-  <source src="{{ video_url }}" type="application/x-mpegURL" />
-
-  {% if subtitles_url %}
-  <track
-    kind="subtitles"
-    src="{{ subtitles_url }}"
-    srclang="en"
-    label="English"
-    default>
-  {% endif %}
-  
-  <p class="vjs-no-js">
-    To view this video please enable JavaScript, and consider upgrading to a
-    web browser that supports HTML5 video.
-  </p>
-</video>
-
+<script src="{% static 'js/video-player.js' %}"></script>
 {% endblock %}
