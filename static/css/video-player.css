@@ -1,0 +1,35 @@
+/* Custom styling for the video player to match site theme */
+.video-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.video-js {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.vjs-default-skin {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* Custom dark mode adjustments */
+.dark-mode .video-js {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.dark-mode .vjs-control-bar {
+  background-color: rgba(24, 24, 24, 0.8);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .video-container {
+    max-width: 100%;
+  }
+}
