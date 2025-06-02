@@ -8,7 +8,16 @@ from django.utils.text import slugify
 
 def list_videos(request):
     media_dir = Path(settings.MEDIA_ROOT) / 'videos'
-    video_folders = [f for f in media_dir.iterdir() if f.is_dir() and (f / 'master.m3u8').exists()]
+
+    video_folders = []
+    if media_dir.exists() and media_dir.is_dir():
+        video_folders = [
+            f for f in media_dir.iterdir()
+            if f.is_dir() and (f / 'master.m3u8').exists()
+        ]
+    else:
+        media_dir.mkdir(parents=True, exist_ok=True)
+        video_folders = []
 
     videos = []
     for folder in video_folders:
@@ -28,24 +37,39 @@ def stream_video(request, video_name):
     video_dir = Path(settings.MEDIA_ROOT) / 'videos' / slug
     master_playlist = video_dir / 'master.m3u8'
 
-    if not master_playlist.exists():
-        return render(request, 'mediahub/error.html', {'message': 'Video not found.'})
+    if not video_dir.exists() or not video_dir.is_dir() or not master_playlist.exists():
+        return render(request, 'mediahub/stream.html', {
+            'video_name': video_name,
+            'video_url': None,
+            'subtitles_list': [],
+            'thumbnail_url': None,
+        })
 
-    # Find all subtitle .vtt files starting with 'index' (like index0.vtt, index1.vtt, etc.)
-    subtitle_files = sorted(video_dir.glob('index*.vtt'))
-    subtitles = []
+    # Look for .vtt subtitle files in the 'hd/' folder
+    hd_dir = video_dir / 'hd'
+    subtitle_files = []
+    if hd_dir.exists():
+        subtitle_files = sorted(hd_dir.glob('index*.vtt'))
+
+    subtitles_list = []
     for sub_file in subtitle_files:
-        # Optionally infer language or label here. If you don’t have language info,
-        # just label them Subtitle 1, Subtitle 2, etc.
-        label = sub_file.stem  # e.g. 'index0'
-        subtitles.append({
-            'url': f"{settings.MEDIA_URL}videos/{slug}/{sub_file.name}",
-            'lang': 'en',  # you can change this or infer it from metadata if available
+        parts = sub_file.stem.split('_')  # e.g. index_en -> ['index', 'en']
+        lang = parts[1] if len(parts) > 1 else 'en'
+        label = f"{lang.upper()} Subtitle"
+        subtitles_list.append({
+            'url': f"{settings.MEDIA_URL}videos/{slug}/hd/{sub_file.name}",
+            'lang': lang,
             'label': label,
         })
+
+    thumbnail_url = None
+    thumbnail_file = video_dir / 'thumbnail.jpg'
+    if thumbnail_file.exists():
+        thumbnail_url = f"{settings.MEDIA_URL}videos/{slug}/thumbnail.jpg"
 
     return render(request, 'mediahub/stream.html', {
         'video_name': video_name,
         'video_url': f"{settings.MEDIA_URL}videos/{slug}/master.m3u8",
-        'subtitles': subtitles,
+        'subtitles_list': subtitles_list,
+        'thumbnail_url': thumbnail_url,
     })
