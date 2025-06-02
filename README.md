@@ -57,11 +57,10 @@ Dineri Server is a self-hosted media management platform that combines torrent s
 3. Make sure qBittorrent is installed and configured
 4. Ensure FFmpeg is installed and available in your system PATH
 5. Make sure Redis is running (e.g., `docker run -p 6379:6379 -d redis:alpine`)
-6. Initialize media conversion schedule: `python manage.py init_media_conversion_task --value 2 --unit hours` (customize interval as needed)
-7. Start Celery worker: `celery -A homeserver worker -l info`
-8. Start Celery beat for scheduling: `celery -A homeserver beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler`
-9. Run the server: `python manage.py runserver`
-10. Open your browser to http://localhost:8000
+6. Start Celery worker: `celery -A homeserver worker --loglevel=info`
+7. Start Celery beat for scheduling: `celery -A homeserver beat --loglevel=info`
+8. Run the server: `python manage.py runserver`
+9. Open your browser to http://localhost:8000
 
 ## 📝 License
 
