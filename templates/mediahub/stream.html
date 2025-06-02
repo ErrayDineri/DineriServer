@@ -1,0 +1,38 @@
+<!-- templates/mediahub/stream.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Streaming: {{ video_name }}</h2>
+
+<!-- Video.js CSS & JS -->
+<link href="https://vjs.zencdn.net/8.9.0/video-js.css" rel="stylesheet" />
+<script src="https://vjs.zencdn.net/8.9.0/video.min.js"></script>
+
+<video
+  id="video-player"
+  class="video-js vjs-default-skin vjs-big-play-centered"
+  controls
+  preload="auto"
+  width="800"
+  height="450"
+  data-setup='{"fluid": true}'>
+  
+  <source src="{{ video_url }}" type="application/x-mpegURL" />
+
+  {% if subtitles_url %}
+  <track
+    kind="subtitles"
+    src="{{ subtitles_url }}"
+    srclang="en"
+    label="English"
+    default>
+  {% endif %}
+  
+  <p class="vjs-no-js">
+    To view this video please enable JavaScript, and consider upgrading to a
+    web browser that supports HTML5 video.
+  </p>
+</video>
+
+{% endblock %}

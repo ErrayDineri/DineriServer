@@ -1,0 +1,18 @@
+<!-- templates/mediahub/list.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Available Videos</h1>
+
+<ul>
+  {% for video in videos %}
+    <li>
+      <a href="{% url 'stream' video_name=video.name %}">{{ video.name }}</a>
+    </li>
+  {% empty %}
+    <li>No videos available.</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
