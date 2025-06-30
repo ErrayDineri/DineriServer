@@ -1,7 +1,40 @@
-.env
+# Python
 *.pyc
-*.python
-/venv
-# Ignore specific media files
-/media/videos/*
-/apps/torrents/services/media/*
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+
+# Django
+*.log
+*.pot
+*.pyc
+*.mo
+*.db
+
+# Environment
+.env
+venv/
+ENV/
+env/
+.venv/
+
+# VSCode
+.vscode/
+
+# Mac
+.DS_Store
+
+# Media/static files
+/media/
+/static/
+
+# Migrations
+**/migrations/*.pyc
+**/migrations/__pycache__/
+**/migrations/*.py
+
+# Coverage reports
+htmlcov/
+.coverage
+.tox/
