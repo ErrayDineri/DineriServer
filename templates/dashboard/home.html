@@ -114,47 +114,102 @@
                     <h5 class="mb-0">
                         <i class="fas fa-chart-line me-2"></i>System Overview
                     </h5>
-                    <button class="btn btn-sm btn-outline-light" onclick="refreshStats()">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
+                    <div class="d-flex align-items-center">
+                        <span id="lastUpdated" class="badge badge-outline-light me-2" style="font-size: 0.75rem;">
+                            <i class="fas fa-clock me-1"></i>Loading...
+                        </span>
+                        <button class="btn btn-sm btn-outline-light" onclick="refreshStats()" id="refreshBtn">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-md-3 mb-3">
-                            <div class="h5 text-success mb-1">
+                            <div class="h5 mb-1" id="diskHeader">
                                 <i class="fas fa-hdd me-2"></i>Storage
                             </div>
                             <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar bg-success" role="progressbar" style="width: 65%"></div>
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     id="diskProgress" style="width: {{ system_stats.disk.usage_percent|default:0 }}%"></div>
                             </div>
-                            <small class="text-muted">650GB / 1TB Used</small>
+                            <small class="text-muted" id="diskText">
+                                {{ system_stats.disk.used_gb|default:0 }}GB / {{ system_stats.disk.total_gb|default:0 }}GB Used
+                            </small>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <div class="h5 text-info mb-1">
+                            <div class="h5 mb-1" id="memoryHeader">
                                 <i class="fas fa-memory me-2"></i>Memory
                             </div>
                             <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar bg-info" role="progressbar" style="width: 45%"></div>
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                     id="memoryProgress" style="width: {{ system_stats.memory.usage_percent|default:0 }}%"></div>
                             </div>
-                            <small class="text-muted">4.5GB / 10GB Used</small>
+                            <small class="text-muted" id="memoryText">
+                                {{ system_stats.memory.used_gb|default:0 }}GB / {{ system_stats.memory.total_gb|default:0 }}GB Used
+                            </small>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <div class="h5 text-warning mb-1">
+                            <div class="h5 mb-1" id="cpuHeader">
                                 <i class="fas fa-microchip me-2"></i>CPU
                             </div>
                             <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar bg-warning" role="progressbar" style="width: 30%"></div>
+                                <div class="progress-bar bg-warning" role="progressbar" 
+                                     id="cpuProgress" style="width: {{ system_stats.cpu.usage_percent|default:0 }}%"></div>
                             </div>
-                            <small class="text-muted">30% Load</small>
+                            <small class="text-muted" id="cpuText">
+                                {{ system_stats.cpu.usage_percent|default:0 }}% Load
+                            </small>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <div class="h5 text-primary mb-1">
+                            <div class="h5 mb-1" id="networkHeader">
                                 <i class="fas fa-network-wired me-2"></i>Network
                             </div>
                             <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar" role="progressbar" style="width: 85%"></div>
+                                <div class="progress-bar" role="progressbar" 
+                                     id="networkProgress" style="width: {{ system_stats.network.bandwidth_mbps|default:0 }}%"></div>
                             </div>
-                            <small class="text-muted">85 Mbps Active</small>
+                            <small class="text-muted" id="networkText">
+                                {{ system_stats.network.bandwidth_mbps|default:0 }} Mbps
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Detailed System Information -->
+                    <div class="row mt-4 pt-3 border-top">
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3">
+                                <i class="fas fa-info-circle me-2"></i>System Information
+                            </h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Platform</small>
+                                    <span id="systemPlatform">{{ system_stats.system.system|default:"Unknown" }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Uptime</small>
+                                    <span id="systemUptime">{{ system_stats.system.uptime|default:"Unknown" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3">
+                                <i class="fas fa-tachometer-alt me-2"></i>Performance Status
+                            </h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge badge-outline-success" id="cpuStatus">
+                                    CPU: {{ system_stats.cpu.status|default:"Unknown"|capfirst }}
+                                </span>
+                                <span class="badge badge-outline-info" id="memoryStatus">
+                                    Memory: {{ system_stats.memory.status|default:"Unknown"|capfirst }}
+                                </span>
+                                <span class="badge badge-outline-warning" id="diskStatus">
+                                    Disk: {{ system_stats.disk.status|default:"Unknown"|capfirst }}
+                                </span>
+                                <span class="badge badge-outline-primary" id="networkStatus">
+                                    Network: {{ system_stats.network.status|default:"Unknown"|capfirst }}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -166,44 +221,201 @@
 
 {% block extra_scripts %}
 <script>
+    let refreshInterval;
+    let isRefreshing = false;
+    
     // Update server uptime
     function updateServerUptime() {
         const uptimeElement = document.getElementById('serverUptime');
         if (uptimeElement) {
-            // This would typically come from your backend
-            uptimeElement.textContent = '24h 15m';
+            uptimeElement.textContent = '{{ system_stats.system.uptime|default:"Unknown" }}';
         }
     }
     
     function refreshStats() {
-        // Add loading state
-        const refreshBtn = event.target.closest('button');
+        if (isRefreshing) return;
+        
+        isRefreshing = true;
+        const refreshBtn = document.getElementById('refreshBtn');
         const originalContent = refreshBtn.innerHTML;
         refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        refreshBtn.disabled = true;
         
-        // Simulate API call
-        setTimeout(() => {
-            refreshBtn.innerHTML = originalContent;
-            // Update progress bars with animation
-            updateProgressBars();
-        }, 1000);
+        // Fetch real system stats from API
+        fetch('/dashboard/api/system-stats/')
+            .then(response => response.json())
+            .then(data => {
+                updateSystemStats(data);
+                updateLastUpdated();
+            })
+            .catch(error => {
+                console.error('Error fetching system stats:', error);
+                showError('Failed to refresh system statistics');
+            })
+            .finally(() => {
+                refreshBtn.innerHTML = originalContent;
+                refreshBtn.disabled = false;
+                isRefreshing = false;
+            });
     }
     
-    function updateProgressBars() {
-        const progressBars = document.querySelectorAll('.progress-bar');
-        progressBars.forEach(bar => {
-            const currentWidth = parseInt(bar.style.width);
-            const newWidth = Math.max(10, Math.min(95, currentWidth + Math.random() * 10 - 5));
-            bar.style.width = newWidth + '%';
-        });
+    function updateSystemStats(data) {
+        // Update CPU
+        if (data.cpu) {
+            updateProgressBar('cpuProgress', data.cpu.usage_percent, getStatusColor(data.cpu.status));
+            updateText('cpuText', `${data.cpu.usage_percent}% Load`);
+            updateStatus('cpuStatus', `CPU: ${capitalize(data.cpu.status)}`);
+            updateHeaderColor('cpuHeader', data.cpu.status);
+        }
+        
+        // Update Memory
+        if (data.memory) {
+            updateProgressBar('memoryProgress', data.memory.usage_percent, getStatusColor(data.memory.status));
+            updateText('memoryText', `${data.memory.used_gb}GB / ${data.memory.total_gb}GB Used`);
+            updateStatus('memoryStatus', `Memory: ${capitalize(data.memory.status)}`);
+            updateHeaderColor('memoryHeader', data.memory.status);
+        }
+        
+        // Update Disk
+        if (data.disk) {
+            updateProgressBar('diskProgress', data.disk.usage_percent, getStatusColor(data.disk.status));
+            updateText('diskText', `${data.disk.used_gb}GB / ${data.disk.total_gb}GB Used`);
+            updateStatus('diskStatus', `Disk: ${capitalize(data.disk.status)}`);
+            updateHeaderColor('diskHeader', data.disk.status);
+        }
+        
+        // Update Network
+        if (data.network) {
+            // For network, we'll show bandwidth as a percentage of 100 Mbps max
+            const networkPercent = Math.min(100, (data.network.bandwidth_mbps / 100) * 100);
+            updateProgressBar('networkProgress', networkPercent, getStatusColor(data.network.status));
+            updateText('networkText', `${data.network.bandwidth_mbps} Mbps`);
+            updateStatus('networkStatus', `Network: ${capitalize(data.network.status)}`);
+            updateHeaderColor('networkHeader', data.network.status);
+        }
+        
+        // Update System Info
+        if (data.system) {
+            updateText('systemPlatform', data.system.system || 'Unknown');
+            updateText('systemUptime', data.system.uptime || 'Unknown');
+        }
+    }
+    
+    function updateProgressBar(id, percentage, color) {
+        const progressBar = document.getElementById(id);
+        if (progressBar) {
+            progressBar.style.width = percentage + '%';
+            progressBar.className = `progress-bar ${color}`;
+        }
+    }
+    
+    function updateText(id, text) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = text;
+        }
+    }
+    
+    function updateStatus(id, text) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = text;
+            // Update badge color based on status
+            const status = text.split(': ')[1].toLowerCase();
+            element.className = `badge badge-outline-${getStatusBadgeColor(status)}`;
+        }
+    }
+    
+    function updateHeaderColor(id, status) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.className = `h5 mb-1 text-${getStatusTextColor(status)}`;
+        }
+    }
+    
+    function getStatusColor(status) {
+        switch (status) {
+            case 'good': case 'idle': return 'bg-success';
+            case 'warning': case 'active': return 'bg-warning';
+            case 'critical': case 'busy': return 'bg-danger';
+            case 'error': return 'bg-secondary';
+            default: return 'bg-primary';
+        }
+    }
+    
+    function getStatusBadgeColor(status) {
+        switch (status) {
+            case 'good': case 'idle': return 'success';
+            case 'warning': case 'active': return 'warning';
+            case 'critical': case 'busy': return 'danger';
+            case 'error': return 'secondary';
+            default: return 'primary';
+        }
+    }
+    
+    function getStatusTextColor(status) {
+        switch (status) {
+            case 'good': case 'idle': return 'success';
+            case 'warning': case 'active': return 'warning';
+            case 'critical': case 'busy': return 'danger';
+            case 'error': return 'secondary';
+            default: return 'primary';
+        }
+    }
+    
+    function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+    
+    function updateLastUpdated() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString();
+        const element = document.getElementById('lastUpdated');
+        if (element) {
+            element.innerHTML = `<i class="fas fa-clock me-1"></i>Updated ${timeString}`;
+        }
+    }
+    
+    function showError(message) {
+        // You can implement a toast notification here
+        console.error(message);
+    }
+    
+    function startAutoRefresh() {
+        // Auto-refresh every 30 seconds
+        refreshInterval = setInterval(refreshStats, 30000);
+    }
+    
+    function stopAutoRefresh() {
+        if (refreshInterval) {
+            clearInterval(refreshInterval);
+        }
     }
     
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
         updateServerUptime();
+        updateLastUpdated();
         
-        // Update uptime every minute
-        setInterval(updateServerUptime, 60000);
+        // Start auto-refresh
+        startAutoRefresh();
+        
+        // Stop auto-refresh when page is hidden to save resources
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopAutoRefresh();
+            } else {
+                startAutoRefresh();
+            }
+        });
+        
+        // Initial refresh after 2 seconds to get fresh data
+        setTimeout(refreshStats, 2000);
+    });
+    
+    // Clean up on page unload
+    window.addEventListener('beforeunload', function() {
+        stopAutoRefresh();
     });
 </script>
 {% endblock %}
