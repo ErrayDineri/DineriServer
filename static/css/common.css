@@ -347,6 +347,7 @@ main::before {
     transform: translateY(-8px) scale(1.02);
     box-shadow: var(--shadow-xl);
 }
+
 /* Enhanced Dark Mode Styles */
 body.dark-mode .navbar {
     background-color: rgba(0, 0, 0, 0.8) !important;
@@ -401,4 +402,25 @@ body.dark-mode .progress {
         height: 40px;
         font-size: 1.1rem;
     }
+}
+
+/* Enhanced text-muted for better visibility */
+.text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Light mode override */
+[data-theme="light"] .text-muted,
+.light-mode .text-muted {
+    color: rgba(108, 117, 125, 0.8) !important;
+}
+
+/* Ensure better contrast for text-muted in glass cards */
+.glass-card .text-muted {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
+[data-theme="light"] .glass-card .text-muted,
+.light-mode .glass-card .text-muted {
+    color: rgba(108, 117, 125, 0.85) !important;
 }

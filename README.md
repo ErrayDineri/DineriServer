@@ -25,25 +25,48 @@ Dineri Server is a self-hosted media management platform that combines torrent s
 - Supports video files and other media types
 - Automatic media conversion to HLS format for compatibility
 - Clean, modern UI for browsing your content
+- Built-in video streaming with adaptive quality
+
+### 🔐 Password Manager
+- Secure password vault with master password protection
+- Store and organize login credentials for various services
+- AES encryption for secure password storage
+- Easy-to-use interface for adding, editing, and managing passwords
+- Search and filter functionality for quick password retrieval
+- Secure session management with automatic logout
+
+### 👤 User Management
+- User registration and authentication system
+- Secure login with session management
+- Individual user accounts and preferences
+- Account creation and management interface
 
 ### 🎨 User Experience
-- Modern, responsive dark theme with a beautiful gradient background
-- Glass-like card design for an elegant look and feel
-- Mobile-friendly interface
+- Modern, responsive dark/light theme with beautiful gradient backgrounds
+- Glass-morphism card design for an elegant, premium look and feel
+- Smooth animations and transitions throughout the interface
+- Mobile-friendly responsive interface that works on all devices
+- Modern UI components with hover effects and interactive elements
+- Consistent design language across all application modules
 
 ## 🛠️ Technical Details
 
 ### Built With
 - **Backend**: Django (Python web framework)
-- **Frontend**: Bootstrap 5, jQuery, Font Awesome
-- **Torrent Engine**: qBittorrent (via API)
-- **Scrapers**: Custom scrapers for multiple torrent sites
+- **Frontend**: Bootstrap 5, jQuery, Font Awesome, Custom CSS with animations
+- **Database**: SQLite (default) with support for PostgreSQL/MySQL
+- **Torrent Engine**: qBittorrent (via Web API)
+- **Task Queue**: Celery with Redis for background processing
+- **Security**: AES encryption for password storage, CSRF protection
+- **Scrapers**: Custom web scrapers for multiple torrent sites
 
 ### Project Structure
 - **apps/search**: Handles torrent searching across multiple sources
 - **apps/torrents**: Manages torrent downloading and status tracking
-- **apps/dashboard**: Provides the main dashboard interface
-- **apps/mediahub**: Media organization and browsing
+- **apps/dashboard**: Provides the main dashboard interface with system overview
+- **apps/mediahub**: Media organization, streaming, and browsing
+- **apps/passwordmanager**: Secure password vault and credential management
+- **apps/accounts**: User authentication, registration, and account management
 
 ### Requirements
 - Python 3.8+
@@ -54,15 +77,45 @@ Dineri Server is a self-hosted media management platform that combines torrent s
 
 ## 🚀 Quick Start
 
-1. Clone the repository
-2. Install dependencies: `pip install -r requirements.txt`
-3. Make sure qBittorrent is installed and configured
-4. Ensure FFmpeg is installed and available in your system PATH
-5. Make sure Redis is running (e.g., `docker run -p 6379:6379 -d redis:alpine`)
-6. Start Celery worker: `celery -A homeserver worker --loglevel=info`
-7. Start Celery beat for scheduling: `celery -A homeserver beat --loglevel=info`
-8. Run the server: `python manage.py runserver`
-9. Open your browser to http://localhost:8000
+1. **Clone the repository**
+   ```bash
+   git clone [repository-url]
+   cd DineriServer
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Set up external services**
+   - Install and configure qBittorrent with Web UI enabled (port 8090)
+   - Install FFmpeg and ensure it's available in your system PATH
+   - Start Redis server: `docker run -p 6379:6379 -d redis:alpine`
+
+4. **Initialize the database**
+   ```bash
+   python manage.py migrate
+   python manage.py collectstatic
+   ```
+
+5. **Start background services**
+   ```bash
+   # Terminal 1: Start Celery worker
+   celery -A homeserver worker --loglevel=info
+   
+   # Terminal 2: Start Celery beat scheduler
+   celery -A homeserver beat --loglevel=info
+   ```
+
+6. **Run the development server**
+   ```bash
+   python manage.py runserver
+   ```
+
+7. **Access the application**
+   - Open your browser to http://localhost:8000
+   - Create an account and start using the platform
 
 ## 📝 License
 

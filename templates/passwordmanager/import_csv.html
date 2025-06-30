@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Import Passwords - Dineri Server{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="glass-card hover-lift fade-in">
+                <div class="d-flex align-items-center mb-4">
+                    <i class="fas fa-file-import me-3" style="font-size: 1.8rem; color: var(--text-accent);"></i>
+                    <h1 class="m-0">Import Passwords from CSV</h1>
+                </div>
+                
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Supported Format:</strong> Bitwarden CSV exports and similar formats with columns: 
+                    <code>name</code>, <code>login_uri</code>, <code>login_username</code>, <code>login_password</code>
+                </div>
+                
+                <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.csv_file.id_for_label }}" class="form-label">
+                            <i class="fas fa-file-csv me-2"></i>{{ form.csv_file.label }}
+                        </label>
+                        {{ form.csv_file }}
+                        {% if form.csv_file.help_text %}
+                        <div class="form-text">{{ form.csv_file.help_text }}</div>
+                        {% endif %}
+                        {% if form.csv_file.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.csv_file.errors %}
+                                <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="input-group-modern mb-4">
+                        <input type="password" 
+                               class="form-control" 
+                               id="{{ form.master_password.id_for_label }}" 
+                               name="{{ form.master_password.name }}" 
+                               placeholder="Enter your master password"
+                               required>
+                        <i class="fas fa-key input-icon"></i>
+                        {% if form.master_password.help_text %}
+                        <div class="form-text">{{ form.master_password.help_text }}</div>
+                        {% endif %}
+                        {% if form.master_password.errors %}
+                        <div class="invalid-feedback d-block mt-2">
+                            {% for error in form.master_password.errors %}
+                                <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-check mb-4">
+                        {{ form.allow_duplicates }}
+                        <label class="form-check-label" for="{{ form.allow_duplicates.id_for_label }}">
+                            {{ form.allow_duplicates.label }}
+                        </label>
+                        {% if form.allow_duplicates.help_text %}
+                        <div class="form-text">{{ form.allow_duplicates.help_text }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'vault' %}" class="btn btn-outline-light me-md-2">
+                            <i class="fas fa-arrow-left me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>Import Passwords
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-5">
+                    <h5 class="mb-3">
+                        <i class="fas fa-question-circle me-2"></i>CSV Format Information
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card-modern">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-check-circle text-success me-2"></i>Required Columns
+                                    </h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><code>name</code> - Site/service name</li>
+                                        <li><code>login_password</code> - Password</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card-modern">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-plus-circle text-info me-2"></i>Optional Columns
+                                    </h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><code>login_uri</code> - Website URL</li>
+                                        <li><code>login_username</code> - Username/email</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning mt-3">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        <strong>Security Note:</strong> Your passwords will be encrypted with your master password before being stored. 
+                        Make sure to use a strong master password and keep it safe.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // File input styling
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) {
+            fileInput.classList.add('form-control');
+            
+            fileInput.addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name;
+                if (fileName) {
+                    // You could add file name display here if needed
+                    console.log('Selected file:', fileName);
+                }
+            });
+        }
+        
+        // Form validation
+        const form = document.querySelector('.needs-validation');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -6,9 +6,12 @@
     <div class="glass-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>🔐 Password Vault</h1>
-            <div>
+            <div class="btn-group">
                 <a href="{% url 'add_entry' %}" class="btn btn-success shine-on-hover">
                     <i class="fas fa-plus-circle me-2"></i>Add New Password
+                </a>
+                <a href="{% url 'import_csv' %}" class="btn btn-outline-light shine-on-hover">
+                    <i class="fas fa-file-import me-2"></i>Import CSV
                 </a>
             </div>
         </div>
