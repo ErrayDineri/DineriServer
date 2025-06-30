@@ -25,16 +25,44 @@ env/
 # Mac
 .DS_Store
 
-# Media/static files
+# Media files (user uploads)
 /media/
-/static/
 
-# Migrations
+# Static files - only ignore collected/compiled static files, not source files
+/staticfiles/
+/static_root/
+# Ignore specific static files that are auto-generated
+static/admin/
+static/rest_framework/
+
+# Keep custom static files in version control
+# static/css/
+# static/js/
+# static/img/
+
+# Migrations - be more specific
 **/migrations/*.pyc
 **/migrations/__pycache__/
-**/migrations/*.py
+# Don't ignore all migration files, only ignore specific ones if needed
+# **/migrations/*.py
 
 # Coverage reports
 htmlcov/
 .coverage
 .tox/
+
+# Node modules (if using npm/yarn for frontend assets)
+node_modules/
+
+# Compiled CSS/JS (if using preprocessors)
+static/css/*.min.css
+static/js/*.min.js
+
+# IDE files
+*.swp
+*.swo
+.idea/
+
+# OS files
+Thumbs.db
+ehthumbs.db
