@@ -6,9 +6,9 @@ def derive_key(master_password: str, salt: bytes) -> bytes:
     return hash_secret_raw(
         secret=master_password.encode(),
         salt=salt,
-        time_cost=5,
-        memory_cost=102400,  # 100MB memory hardness
-        parallelism=8,
+        time_cost=2,         # Reduced from 5 to 2 for better performance
+        memory_cost=65536,   # Reduced from 102400 to 65536 (64MB)
+        parallelism=4,       # Reduced from 8 to 4
         hash_len=32,
         type=Type.ID
     )
