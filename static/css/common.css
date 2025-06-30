@@ -1,26 +1,77 @@
-/* Enhanced styling for Dineri Server */
+/* Enhanced Modern Components for Dineri Server */
 
-/* Navigation bar improvements */
+/* Navigation Bar Enhancements */
 .navbar {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    background-color: rgba(33, 37, 41, 0.9) !important;
-    transition: background-color var(--transition-speed) ease;
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--transition-normal);
+    position: relative;
+    z-index: 1000;
+}
+
+.navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--accent-gradient);
+    opacity: 0.8;
 }
 
 .navbar-brand {
+    font-family: var(--font-accent);
     font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    color: var(--text-primary) !important;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
 }
 
+.navbar-brand:hover {
+    transform: scale(1.05);
+    color: var(--text-accent) !important;
+}
+
+/* Enhanced Navigation Links */
 .nav-link {
     position: relative;
-    margin: 0 5px;
-    transition: all 0.3s ease;
+    margin: 0 var(--space-sm);
+    padding: var(--space-sm) var(--space-md) !important;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    color: var(--text-secondary) !important;
+    transition: all var(--transition-normal);
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left var(--transition-slow);
 }
 
 .nav-link:hover {
     transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary) !important;
+    box-shadow: var(--shadow-sm);
+}
+
+.nav-link:hover::before {
+    left: 100%;
 }
 
 .nav-link::after {
@@ -29,38 +80,90 @@
     width: 0;
     height: 2px;
     bottom: 0;
-    left: 0;
-    background-color: var(--bs-primary);
-    transition: width 0.3s;
+    left: 50%;
+    background: var(--accent-gradient);
+    transition: all var(--transition-normal);
+    transform: translateX(-50%);
 }
 
 .nav-link:hover::after {
-    width: 100%;
+    width: 80%;
 }
 
-/* Main content improvements */
+/* Enhanced Dropdown */
+.dropdown-menu {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+    padding: var(--space-sm);
+    margin-top: var(--space-sm);
+}
+
+.dropdown-item {
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    transition: all var(--transition-fast);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    transform: translateX(4px);
+}
+
+/* Enhanced Main Content */
 main {
-    padding-top: 5.5rem;
-    padding-bottom: 2rem;
+    padding-top: 6rem;
+    padding-bottom: var(--space-xl);
+    position: relative;
 }
 
+main::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Enhanced Glass Card */
 .glass-card {
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    transition: all var(--transition-normal);
+    transform: translateZ(0);
 }
 
 .glass-card::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 80%);
-    transform: rotate(30deg);
-    pointer-events: none;
-    z-index: 0;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--primary-gradient);
+    border-radius: var(--radius-xl);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.glass-card:hover::before {
+    opacity: 0.1;
 }
 
 .glass-card > * {
@@ -68,115 +171,234 @@ main {
     z-index: 1;
 }
 
-/* Buttons styling */
+/* Modern Button Enhancements */
 .btn {
-    border-radius: 6px;
-    transition: all 0.3s ease;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    font-family: var(--font-primary);
+    transition: all var(--transition-normal);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left var(--transition-slow);
 }
 
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
-/* Scrollbars */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+.btn:hover::before {
+    left: 100%;
 }
 
-::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+.btn:active {
+    transform: translateY(0);
 }
 
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+.btn-primary {
+    background: var(--primary-gradient);
+    color: white;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+.btn-secondary {
+    background: var(--secondary-gradient);
+    color: white;
 }
 
-/* Dark mode toggle button enhancement */
+.btn-outline-light {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-primary);
+    background: transparent;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: var(--text-primary);
+}
+
+/* Enhanced Dark Mode Toggle */
 #darkModeToggle, #performanceToggle {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-    margin-left: 0.5rem;
+    font-size: 1.25rem;
+    transition: all var(--transition-normal);
+    margin-left: var(--space-sm);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+#darkModeToggle::before, #performanceToggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--accent-gradient);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    border-radius: 50%;
 }
 
 #darkModeToggle:hover, #performanceToggle:hover {
-    transform: rotate(30deg);
-    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: var(--shadow-md);
 }
 
-/* Container for pages */
+#darkModeToggle:hover::before, #performanceToggle:hover::before {
+    opacity: 0.2;
+}
+
+/* Enhanced Page Container */
 .page-container {
-    padding: 2rem;
-    border-radius: 1rem;
-    background-color: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.5s ease;
+    padding: var(--space-xl);
+    border-radius: var(--radius-xl);
+    background: var(--glass-bg-light);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg);
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+.page-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--accent-gradient);
+    opacity: 0.6;
 }
 
-/* Progress bars */
+@keyframes fadeInUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.98); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+/* Enhanced Progress Bars */
 .progress {
     overflow: hidden;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.2);
+    height: 12px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .progress-bar {
-    transition: width 0.5s ease, background-color 0.3s ease;
+    background: var(--primary-gradient);
+    transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                background-color var(--transition-normal);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Card hover effects */
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Enhanced Hover Effects */
 .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all var(--transition-normal);
+    transform: translateZ(0);
 }
 
 .hover-lift:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-xl);
 }
-
-/* Dark mode specific styles */
+/* Enhanced Dark Mode Styles */
 body.dark-mode .navbar {
-    background-color: rgba(10, 10, 10, 0.9) !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
 }
 
 body.dark-mode .page-container {
-    background-color: rgba(0, 0, 0, 0.3);
+    background: var(--glass-bg-dark);
+    border-color: var(--glass-border-dark);
 }
 
 body.dark-mode .progress {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Mobile-friendly adjustments */
+/* Enhanced Mobile Responsiveness */
 @media (max-width: 768px) {
     .navbar-brand {
-        font-size: 1rem;
+        font-size: 1.25rem;
     }
     
     .page-container {
-        padding: 1rem;
+        padding: var(--space-lg);
+        margin: var(--space-sm);
     }
     
     .glass-card {
-        padding: 2rem 1rem;
+        padding: var(--space-xl) var(--space-lg);
+    }
+    
+    .nav-link {
+        margin: var(--space-xs);
+        padding: var(--space-sm) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-brand {
+        font-size: 1.125rem;
+    }
+    
+    .page-container {
+        padding: var(--space-md);
+        margin: var(--space-xs);
+    }
+    
+    .glass-card {
+        padding: var(--space-lg) var(--space-md);
+    }
+    
+    #darkModeToggle, #performanceToggle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
     }
 }

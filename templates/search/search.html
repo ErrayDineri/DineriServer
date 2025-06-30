@@ -3,8 +3,13 @@
 
 {% block content %}
 <div class="container py-4">
-    <div class="page-container fade-in dark-mode-transition">
-        <h1 class="mb-4 text-white">Search Torrents</h1>        <!-- Action Bar -->
+    <div class="glass-card mb-4">
+        <div class="d-flex align-items-center mb-4">
+            <i class="fas fa-search me-3" style="font-size: 1.8rem;"></i>
+            <h1 class="m-0">Search Torrents</h1>
+        </div>
+        
+        <!-- Action Bar -->
         <div class="action-bar slide-in-left">
             <div class="dropdown me-2">                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="sourceFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" data-bs-offset="0,10">
                     Sources
@@ -57,7 +62,7 @@
                 <!-- rows injected here -->
             </ul>
         </div>
-    </div>
+    </div> <!-- Close glass-card -->
 </div>
 {% endblock %}
 

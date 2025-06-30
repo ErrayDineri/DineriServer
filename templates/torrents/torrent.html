@@ -3,8 +3,11 @@
 
 {% block content %}
 <div class="container py-4">
-    <div class="page-container slide-in-left dark-mode-transition">
-        <h1 class="mb-4 text-white">Torrent Status</h1>
+    <div class="glass-card mb-4">
+        <div class="d-flex align-items-center mb-4">
+            <i class="fas fa-download me-3" style="font-size: 1.8rem;"></i>
+            <h1 class="m-0">Torrent Status</h1>
+        </div>
         
         {% csrf_token %}
 
@@ -22,7 +25,7 @@
                 <!-- rows injected here -->
             </ul>
         </div>
-    </div>
+    </div> <!-- Close glass-card -->
 </div>
 {% endblock %}
 

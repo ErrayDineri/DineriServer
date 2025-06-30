@@ -1,20 +1,209 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Dashboard - Dineri Server{% endblock %}
+
 {% block content %}
-<div class="container py-4">
-    <div class="glass-card hover-lift zoom-in">
-        <h1>🎬 Welcome to Dineri Server</h1>
-        <p class="lead mb-4">Your all-in-one media management platform</p>
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="glass-card hover-lift fade-in text-center">
+                <div class="mb-4">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="position-relative">
+                            <i class="fas fa-server glow" style="font-size: 4rem; color: var(--text-accent);"></i>
+                            <span class="status-indicator status-online position-absolute top-0 end-0"></span>
+                        </div>
+                    </div>
+                    <h1 class="display-5 mb-3">Welcome to Dineri Server</h1>
+                    <p class="lead text-muted mb-4">Your sophisticated media management and home server solution</p>
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-3 slide-in-left">
+                            <div class="badge-modern badge-success">
+                                <i class="fas fa-check-circle me-1"></i>
+                                Server Online
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3 slide-in-up" style="animation-delay: 0.1s">
+                            <div class="badge-modern badge-info">
+                                <i class="fas fa-users me-1"></i>
+                                {% if user.is_authenticated %}Connected{% else %}Guest Mode{% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3 slide-in-right" style="animation-delay: 0.2s">
+                            <div class="badge-modern badge-warning">
+                                <i class="fas fa-clock me-1"></i>
+                                <span id="serverUptime">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Grid -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-3 col-md-6">
+            <div class="card-modern hover-lift slide-in-up" style="animation-delay: 0.1s">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-search fa-2x mb-2" style="color: var(--text-accent);"></i>
+                    </div>
+                    <h5 class="card-title">Search Torrents</h5>
+                    <p class="card-text text-muted mb-3">Find and discover new content across multiple sources</p>
+                    <a href="{% url 'search_view' %}" class="btn-custom w-100 shine-on-hover">
+                        <i class="fas fa-search me-2"></i>Start Searching
+                    </a>
+                </div>
+            </div>
+        </div>
         
-        <div class="d-grid gap-4 col-lg-8 mx-auto">
-            <a href="{% url 'search_view' %}" class="btn btn-primary btn-lg stagger-item shine-on-hover">
-                <i class="fas fa-search me-2"></i> Search Torrents
-            </a>
-            <a href="{% url 'torrent' %}" class="btn btn-success btn-lg stagger-item shine-on-hover">
-                <i class="fas fa-download me-2"></i> Manage Downloads
-            </a>
+        <div class="col-lg-3 col-md-6">
+            <div class="card-modern hover-lift slide-in-up" style="animation-delay: 0.2s">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-download fa-2x mb-2" style="color: #4caf50;"></i>
+                    </div>
+                    <h5 class="card-title">Manage Downloads</h5>
+                    <p class="card-text text-muted mb-3">Monitor and control your active torrent downloads</p>
+                    <a href="{% url 'torrent' %}" class="btn-custom w-100 shine-on-hover">
+                        <i class="fas fa-cog me-2"></i>Manage Torrents
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="card-modern hover-lift slide-in-up" style="animation-delay: 0.3s">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-film fa-2x mb-2" style="color: #ff9800;"></i>
+                    </div>
+                    <h5 class="card-title">Media Hub</h5>
+                    <p class="card-text text-muted mb-3">Stream and organize your media collection</p>
+                    <a href="{% url 'video_list' %}" class="btn-custom w-100 shine-on-hover">
+                        <i class="fas fa-play me-2"></i>Browse Media
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="card-modern hover-lift slide-in-up" style="animation-delay: 0.4s">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-shield-alt fa-2x mb-2" style="color: #9c27b0;"></i>
+                    </div>
+                    <h5 class="card-title">Password Vault</h5>
+                    <p class="card-text text-muted mb-3">Secure password management and storage</p>
+                    <a href="{% url 'vault' %}" class="btn-custom w-100 shine-on-hover">
+                        <i class="fas fa-key me-2"></i>Access Vault
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern slide-in-up" style="animation-delay: 0.5s">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>System Overview
+                    </h5>
+                    <button class="btn btn-sm btn-outline-light" onclick="refreshStats()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <div class="h5 text-success mb-1">
+                                <i class="fas fa-hdd me-2"></i>Storage
+                            </div>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 65%"></div>
+                            </div>
+                            <small class="text-muted">650GB / 1TB Used</small>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="h5 text-info mb-1">
+                                <i class="fas fa-memory me-2"></i>Memory
+                            </div>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 45%"></div>
+                            </div>
+                            <small class="text-muted">4.5GB / 10GB Used</small>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="h5 text-warning mb-1">
+                                <i class="fas fa-microchip me-2"></i>CPU
+                            </div>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 30%"></div>
+                            </div>
+                            <small class="text-muted">30% Load</small>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="h5 text-primary mb-1">
+                                <i class="fas fa-network-wired me-2"></i>Network
+                            </div>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar" role="progressbar" style="width: 85%"></div>
+                            </div>
+                            <small class="text-muted">85 Mbps Active</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Update server uptime
+    function updateServerUptime() {
+        const uptimeElement = document.getElementById('serverUptime');
+        if (uptimeElement) {
+            // This would typically come from your backend
+            uptimeElement.textContent = '24h 15m';
+        }
+    }
+    
+    function refreshStats() {
+        // Add loading state
+        const refreshBtn = event.target.closest('button');
+        const originalContent = refreshBtn.innerHTML;
+        refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        // Simulate API call
+        setTimeout(() => {
+            refreshBtn.innerHTML = originalContent;
+            // Update progress bars with animation
+            updateProgressBars();
+        }, 1000);
+    }
+    
+    function updateProgressBars() {
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach(bar => {
+            const currentWidth = parseInt(bar.style.width);
+            const newWidth = Math.max(10, Math.min(95, currentWidth + Math.random() * 10 - 5));
+            bar.style.width = newWidth + '%';
+        });
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateServerUptime();
+        
+        // Update uptime every minute
+        setInterval(updateServerUptime, 60000);
+    });
+</script>
 {% endblock %}

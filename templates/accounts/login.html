@@ -1,49 +1,64 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Login - Dineri Server{% endblock %}
+
 {% block content %}
-<div class="container py-4">
-    <div class="glass-card hover-lift fade-in">
-        <h1>🔐 Login</h1>
-        <p class="lead mb-4">Sign in to access your account</p>
-        
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <form method="post" class="needs-validation" novalidate>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="glass-card hover-lift fade-in">
+                <div class="text-center mb-4">
+                    <div class="mb-3">
+                        <i class="fas fa-shield-alt"
+                            style="font-size: 3rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                    </div>
+                    <h1 class="h2 mb-2">Welcome Back</h1>
+                    <p class="lead text-muted">Sign in to access your server dashboard</p>
+                </div>
+
+                <form method="post" action="{% url 'login' %}">
                     {% csrf_token %}
-                    
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="id_username" name="username" placeholder="Username" required>
-                        <label for="id_username">Username</label>
+
+                    <div class="input-group-modern slide-in-right">
+                        <input type="text" class="form-control" id="id_username" name="username"
+                            placeholder="Enter your username" autocomplete="username">
+                        <i class="fas fa-user input-icon"></i>
                         {% if form.username.errors %}
-                        <div class="invalid-feedback d-block">
+                        <div class="invalid-feedback d-block mt-2">
                             {% for error in form.username.errors %}
-                                {{ error }}
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
                             {% endfor %}
                         </div>
                         {% endif %}
                     </div>
-                    
-                    <div class="form-floating mb-4">
-                        <input type="password" class="form-control" id="id_password" name="password" placeholder="Password" required>
-                        <label for="id_password">Password</label>
+
+                    <div class="input-group-modern slide-in-right" style="animation-delay: 0.1s">
+                        <input type="password" class="form-control" id="id_password" name="password"
+                            placeholder="Enter your password" autocomplete="current-password">
+                        <i class="fas fa-lock input-icon"></i>
                         {% if form.password.errors %}
-                        <div class="invalid-feedback d-block">
+                        <div class="invalid-feedback d-block mt-2">
                             {% for error in form.password.errors %}
-                                {{ error }}
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
                             {% endfor %}
                         </div>
                         {% endif %}
                     </div>
-                    
-                    <div class="d-grid gap-3">
-                        <button type="submit" class="btn btn-primary btn-lg stagger-item shine-on-hover">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
+
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Sign In
                         </button>
-                        <div class="text-center">
-                            <span>Don't have an account?</span>
-                            <a href="{% url 'register' %}" class="ms-1">Register</a>
-                        </div>
+                    </div>
+
+                    <div class="text-center slide-in-up" style="animation-delay: 0.3s">
+                        <p class="text-muted mb-2">Don't have an account?</p>
+                        <a href="{% url 'register' %}" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-user-plus me-1"></i>
+                            Create Account
+                        </a>
                     </div>
                 </form>
             </div>
@@ -54,19 +69,33 @@
 
 {% block extra_scripts %}
 <script>
-    // Form validation
-    (function() {
-        'use strict'
-        const forms = document.querySelectorAll('.needs-validation')
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
+    document.addEventListener('DOMContentLoaded', function () {
+        // Focus enhancement for inputs (non-intrusive)
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function () {
+                this.parentElement.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function () {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+
+        // Simple form validation feedback
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                // Let the form submit naturally, just add visual feedback
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    setTimeout(() => {
+                        submitBtn.innerHTML =
+                            '<i class="fas fa-spinner fa-spin me-2"></i>Signing In...';
+                    }, 50);
                 }
-                form.classList.add('was-validated')
-            }, false)
-        })
-    })()
+            });
+        }
+    });
 </script>
 {% endblock %}
