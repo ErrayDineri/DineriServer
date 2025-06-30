@@ -6,6 +6,12 @@ Dineri Server is a self-hosted media management platform that combines torrent s
 
 ## 🌟 Features
 
+### ✨ Recent Updates
+- **Enhanced Password Manager**: CSV import functionality for easy migration from other password managers
+- **Modern UI Overhaul**: Complete redesign with glassmorphism effects and smooth animations
+- **Improved Navigation**: Consistent header styling and better visual hierarchy across all pages
+- **Better Form Handling**: Enhanced form validation and user feedback systems
+
 ### 🔍 Multi-Source Torrent Search
 - Search across multiple torrent sites simultaneously:
   - Nyaa
@@ -32,8 +38,11 @@ Dineri Server is a self-hosted media management platform that combines torrent s
 - Store and organize login credentials for various services
 - AES encryption for secure password storage
 - Easy-to-use interface for adding, editing, and managing passwords
+- **CSV Import**: Import passwords from Bitwarden and other password managers
+- Support for bulk password imports with duplicate detection
 - Search and filter functionality for quick password retrieval
 - Secure session management with automatic logout
+- Modern glassmorphism UI with intuitive password management
 
 ### 👤 User Management
 - User registration and authentication system
@@ -48,6 +57,8 @@ Dineri Server is a self-hosted media management platform that combines torrent s
 - Mobile-friendly responsive interface that works on all devices
 - Modern UI components with hover effects and interactive elements
 - Consistent design language across all application modules
+- Enhanced form styling with modern input groups and validation
+- Intuitive navigation with contextual actions and clear visual hierarchy
 
 ## 🛠️ Technical Details
 
@@ -65,8 +76,14 @@ Dineri Server is a self-hosted media management platform that combines torrent s
 - **apps/torrents**: Manages torrent downloading and status tracking
 - **apps/dashboard**: Provides the main dashboard interface with system overview
 - **apps/mediahub**: Media organization, streaming, and browsing
-- **apps/passwordmanager**: Secure password vault and credential management
+- **apps/passwordmanager**: Secure password vault with CSV import and credential management
 - **apps/accounts**: User authentication, registration, and account management
+
+### Key Features by Module
+- **Password Manager**: AES-256 encryption, CSV import/export, duplicate detection, secure master password system
+- **Search Engine**: Multi-threaded scraping, result aggregation, smart filtering and sorting
+- **Media Hub**: Automatic transcoding, HLS streaming, responsive video player
+- **Dashboard**: Real-time system monitoring, elegant glassmorphism interface
 
 ### Requirements
 - Python 3.8+

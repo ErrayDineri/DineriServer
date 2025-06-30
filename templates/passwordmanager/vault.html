@@ -5,7 +5,10 @@
 <div class="container py-4">
     <div class="glass-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>🔐 Password Vault</h1>
+            <div class="d-flex align-items-center">
+                <i class="fas fa-shield-alt me-3" style="font-size: 1.8rem; color: var(--text-accent);"></i>
+                <h1 class="m-0">Password Vault</h1>
+            </div>
             <div class="btn-group">
                 <a href="{% url 'add_entry' %}" class="btn btn-success shine-on-hover">
                     <i class="fas fa-plus-circle me-2"></i>Add New Password
@@ -18,62 +21,79 @@
 
         {% if entries %}
         <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-dark">
+            <table class="table table-hover vault-table">
+                <thead>
                     <tr>
-                        <th>Site</th>
-                        <th>URL</th>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Actions</th>
+                        <th class="text-center" style="width: 20%;">
+                            <i class="fas fa-globe me-2 text-primary"></i>Site
+                        </th>
+                        <th class="text-center" style="width: 25%;">
+                            <i class="fas fa-link me-2 text-info"></i>URL
+                        </th>
+                        <th class="text-center" style="width: 20%;">
+                            <i class="fas fa-user me-2 text-success"></i>Username
+                        </th>
+                        <th class="text-center" style="width: 20%;">
+                            <i class="fas fa-key me-2 text-warning"></i>Password
+                        </th>
+                        <th class="text-center" style="width: 15%;">
+                            <i class="fas fa-cogs me-2 text-secondary"></i>Actions
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for entry, decrypted_password in entries %}
-                    <tr class="fade-in stagger-item">
-                        <td>
-                            <strong>{{ entry.site_name }}</strong>
+                    <tr class="fade-in stagger-item vault-row">
+                        <td class="text-center">
+                            <div class="site-badge">
+                                <i class="fas fa-globe text-primary me-2"></i>
+                                <strong>{{ entry.site_name }}</strong>
+                            </div>
                         </td>
-                        <td>
+                        <td class="text-center">
                             {% if entry.url %}
-                            <a href="{{ entry.url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                                {{ entry.url|truncatechars:30 }}
-                                <i class="fas fa-external-link-alt ms-1 small"></i>
+                            <a href="{{ entry.url }}" target="_blank" rel="noopener noreferrer" 
+                               class="url-link text-decoration-none">
+                                <i class="fas fa-external-link-alt text-info me-1"></i>
+                                {{ entry.url|truncatechars:25 }}
                             </a>
                             {% else %}
-                            <span class="text-muted">—</span>
+                            <span class="text-muted">
+                                <i class="fas fa-minus"></i>
+                            </span>
                             {% endif %}
                         </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <span class="credential-text">{{ entry.username }}</span>
-                                <button class="btn btn-sm btn-link ms-2 copy-btn" data-clipboard-text="{{ entry.username }}"
-                                        title="Copy username">
+                        <td class="text-center">
+                            <div class="credential-container">
+                                <span class="credential-text text-success">{{ entry.username }}</span>
+                                <button class="btn btn-sm btn-outline-success ms-2 copy-btn" 
+                                        data-clipboard-text="{{ entry.username }}" title="Copy username">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </div>
                         </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <span class="credential-text password-field">••••••••</span>
-                                <button class="btn btn-sm btn-link ms-1 toggle-password-btn" title="Show/hide password">
+                        <td class="text-center">
+                            <div class="credential-container">
+                                <span class="credential-text password-field text-warning">••••••••</span>
+                                <button class="btn btn-sm btn-outline-warning ms-1 toggle-password-btn" 
+                                        title="Show/hide password">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn btn-sm btn-link ms-1 copy-btn" data-clipboard-text="{{ decrypted_password }}"
-                                        title="Copy password">
+                                <button class="btn btn-sm btn-outline-warning ms-1 copy-btn" 
+                                        data-clipboard-text="{{ decrypted_password }}" title="Copy password">
                                     <i class="fas fa-copy"></i>
                                 </button>
                                 <span class="d-none actual-password">{{ decrypted_password }}</span>
                             </div>
                         </td>
-                        <td>
-                            <div class="btn-group" role="group" aria-label="Password actions">
-                                <a href="#" class="btn btn-sm btn-outline-primary" title="Edit">
+                        <td class="text-center">
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-outline-primary me-1" title="Edit">
                                     <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="#" class="btn btn-sm btn-outline-danger" title="Delete">
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" title="Delete">
                                     <i class="fas fa-trash"></i>
-                                </a>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -98,6 +118,133 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js">
+<style>
+    /* Vault Table Styling */
+    .vault-table {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .vault-table thead th {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 1rem;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    .vault-row {
+        background: rgba(255, 255, 255, 0.02);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .vault-row:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .vault-row td {
+        padding: 1rem;
+        vertical-align: middle;
+        border: none;
+        text-align: center;
+    }
+    
+    .site-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(0, 123, 255, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        border: 1px solid rgba(0, 123, 255, 0.3);
+    }
+    
+    .url-link {
+        color: #17a2b8 !important;
+        transition: all 0.3s ease;
+    }
+    
+    .url-link:hover {
+        color: #138496 !important;
+        transform: scale(1.05);
+    }
+    
+    .credential-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .credential-text {
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .copy-btn, .toggle-password-btn {
+        transition: all 0.3s ease;
+    }
+    
+    .copy-btn:hover, .toggle-password-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    /* Color-coded buttons */
+    .btn-outline-success {
+        border-color: #28a745;
+        color: #28a745;
+    }
+    
+    .btn-outline-warning {
+        border-color: #ffc107;
+        color: #ffc107;
+    }
+    
+    .btn-outline-primary {
+        border-color: #007bff;
+        color: #007bff;
+    }
+    
+    .btn-outline-danger {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .vault-table thead th,
+        .vault-row td {
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .credential-container {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+
 <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
 <script>
     // Initialize clipboard.js for copy buttons
