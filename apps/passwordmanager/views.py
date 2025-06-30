@@ -8,6 +8,7 @@ from .services.utils import derive_key, encrypt_password, decrypt_password
 import os
 import csv
 import io
+import time
 
 @login_required
 def add_entry(request):
@@ -36,9 +37,12 @@ def add_entry(request):
 @login_required
 def vault(request):
     if request.method == 'POST':
+        start_time = time.time()
+        
         master_pw = request.POST['master_password']
         entries = VaultEntry.objects.filter(user=request.user)
         decrypted = []
+        
         for entry in entries:
             try:
                 key = derive_key(master_pw, entry.salt)
@@ -46,13 +50,25 @@ def vault(request):
                 decrypted.append((entry, decrypted_pw))
             except Exception as e:
                 decrypted.append((entry, 'Invalid master password'))
-        return render(request, 'passwordmanager/vault.html', {'entries': decrypted})
+        
+        end_time = time.time()
+        decrypt_time = round((end_time - start_time) * 1000, 2)  # Convert to milliseconds
+        
+        messages.info(request, f'🔓 Vault decrypted in {decrypt_time}ms ({len(entries)} entries)')
+        
+        return render(request, 'passwordmanager/vault.html', {
+            'entries': decrypted,
+            'decrypt_time': decrypt_time,
+            'entries_count': len(entries)
+        })
     return render(request, 'passwordmanager/vault_login.html')
 
 
 @login_required
 def import_csv(request):
     if request.method == 'POST':
+        start_time = time.time()
+        
         form = CSVImportForm(request.POST, request.FILES)
         if form.is_valid():
             csv_file = request.FILES['csv_file']
@@ -61,12 +77,16 @@ def import_csv(request):
             
             try:
                 # Read CSV file
+                file_read_start = time.time()
                 decoded_file = csv_file.read().decode('utf-8')
                 csv_data = csv.DictReader(io.StringIO(decoded_file))
+                file_read_time = round((time.time() - file_read_start) * 1000, 2)
                 
                 imported_count = 0
                 skipped_count = 0
                 error_count = 0
+                
+                processing_start = time.time()
                 
                 for row in csv_data:
                     try:
@@ -113,18 +133,23 @@ def import_csv(request):
                         error_count += 1
                         continue
                 
-                # Show results
+                processing_time = round((time.time() - processing_start) * 1000, 2)
+                total_time = round((time.time() - start_time) * 1000, 2)
+                
+                # Show results with timing info
                 if imported_count > 0:
-                    messages.success(request, f'Successfully imported {imported_count} password entries.')
+                    messages.success(request, f'✅ Successfully imported {imported_count} password entries in {total_time}ms')
+                    messages.info(request, f'📊 Timing: File read: {file_read_time}ms, Processing: {processing_time}ms')
                 if skipped_count > 0:
-                    messages.info(request, f'Skipped {skipped_count} entries (empty or duplicate).')
+                    messages.info(request, f'⏭️ Skipped {skipped_count} entries (empty or duplicate)')
                 if error_count > 0:
-                    messages.warning(request, f'{error_count} entries had errors and were not imported.')
+                    messages.warning(request, f'⚠️ {error_count} entries had errors and were not imported')
                 
                 return redirect('vault')
                 
             except Exception as e:
-                messages.error(request, f'Error processing CSV file: {str(e)}')
+                total_time = round((time.time() - start_time) * 1000, 2)
+                messages.error(request, f'❌ Error processing CSV file in {total_time}ms: {str(e)}')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
