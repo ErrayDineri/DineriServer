@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>🔐 Password Vault</h1>
+            <div>
+                <a href="{% url 'add_entry' %}" class="btn btn-success shine-on-hover">
+                    <i class="fas fa-plus-circle me-2"></i>Add New Password
+                </a>
+            </div>
+        </div>
+
+        {% if entries %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Site</th>
+                        <th>URL</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry, decrypted_password in entries %}
+                    <tr class="fade-in stagger-item">
+                        <td>
+                            <strong>{{ entry.site_name }}</strong>
+                        </td>
+                        <td>
+                            {% if entry.url %}
+                            <a href="{{ entry.url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                {{ entry.url|truncatechars:30 }}
+                                <i class="fas fa-external-link-alt ms-1 small"></i>
+                            </a>
+                            {% else %}
+                            <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="credential-text">{{ entry.username }}</span>
+                                <button class="btn btn-sm btn-link ms-2 copy-btn" data-clipboard-text="{{ entry.username }}"
+                                        title="Copy username">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="credential-text password-field">••••••••</span>
+                                <button class="btn btn-sm btn-link ms-1 toggle-password-btn" title="Show/hide password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-link ms-1 copy-btn" data-clipboard-text="{{ decrypted_password }}"
+                                        title="Copy password">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <span class="d-none actual-password">{{ decrypted_password }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Password actions">
+                                <a href="#" class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-folder-open fa-4x text-muted"></i>
+            </div>
+            <h3>Your vault is empty</h3>
+            <p class="text-muted mb-4">Add your first password entry to get started</p>
+            <a href="{% url 'add_entry' %}" class="btn btn-primary btn-lg shine-on-hover">
+                <i class="fas fa-plus-circle me-2"></i>Add First Password
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+<script>
+    // Initialize clipboard.js for copy buttons
+    new ClipboardJS('.copy-btn').on('success', function(e) {
+        const btn = e.trigger;
+        const originalIcon = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check text-success"></i>';
+        setTimeout(() => {
+            btn.innerHTML = originalIcon;
+        }, 1500);
+        e.clearSelection();
+    });
+
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const passwordField = row.querySelector('.password-field');
+            const actualPassword = row.querySelector('.actual-password');
+            const icon = this.querySelector('i');
+            
+            if (passwordField.textContent === '••••••••') {
+                passwordField.textContent = actualPassword.textContent;
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+                // Auto-hide after 10 seconds
+                setTimeout(() => {
+                    if (passwordField.textContent !== '••••••••') {
+                        passwordField.textContent = '••••••••';
+                        icon.classList.replace('fa-eye-slash', 'fa-eye');
+                    }
+                }, 10000);
+            } else {
+                passwordField.textContent = '••••••••';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+    });
+</script>
+{% endblock %}

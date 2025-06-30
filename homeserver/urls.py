@@ -9,6 +9,8 @@ urlpatterns = [
     path('torrents/', include('apps.torrents.urls')),
     path('search/', include('apps.search.urls')),
     path('mediahub/', include('apps.mediahub.urls')),
+    path('passwords/', include('apps.passwordmanager.urls')),
+    path('accounts/', include('apps.accounts.urls')),
 ]
 
 # Serve media files in development

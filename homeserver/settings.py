@@ -35,6 +35,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'homeserver.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'homeserver.urls'
@@ -120,6 +121,19 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
 
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1',
+    'http://localhost',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
+
+# Authentication settings
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard_home'
+LOGOUT_REDIRECT_URL = 'dashboard_home'
+
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -137,6 +151,8 @@ INSTALLED_APPS = [
     'apps.mediahub',
     'apps.torrents',
     'apps.search',
+    'apps.passwordmanager',
+    'apps.accounts'
 ]
 
 # Celery configuration

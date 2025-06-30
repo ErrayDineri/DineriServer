@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="glass-card hover-lift zoom-in">
+        <h1>🔐 Password Vault</h1>
+        <p class="lead mb-4">Enter your master password to access your secure vault</p>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" id="id_master_password" name="master_password" 
+                               placeholder="Master Password" required autofocus>
+                        <label for="id_master_password">Master Password</label>
+                        <div class="invalid-feedback">Please enter your master password.</div>
+                    </div>
+                    
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-primary btn-lg stagger-item shine-on-hover">
+                            <i class="fas fa-unlock-alt me-2"></i>Unlock Vault
+                        </button>
+                        <a href="{% url 'add_entry' %}" class="btn btn-outline-secondary stagger-item shine-on-hover">
+                            <i class="fas fa-plus-circle me-2"></i>Add New Password
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Form validation
+    (function() {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="glass-card hover-lift">
+        <h1>🔑 Add Password Entry</h1>
+        <p class="lead mb-4">Store your credentials securely</p>
+
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="id_site_name" name="site_name" placeholder="Site Name" required>
+                        <label for="id_site_name">Site Name</label>
+                        <div class="invalid-feedback">Please provide a site name.</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="url" class="form-control" id="id_url" name="url" placeholder="URL (https://example.com)">
+                        <label for="id_url">URL</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="id_username" name="username" placeholder="Username" required>
+                        <label for="id_username">Username</label>
+                        <div class="invalid-feedback">Please provide a username.</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="id_password" name="password" placeholder="Password" required>
+                        <label for="id_password">Password</label>
+                        <div class="invalid-feedback">Please provide a password.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input type="password" class="form-control" id="id_master_password" name="master_password" placeholder="Master Password" required>
+                <label for="id_master_password">Master Password</label>
+                <div class="invalid-feedback">Please provide your master password.</div>
+                <small class="form-text text-muted">This is used to encrypt your password. Remember it well!</small>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{% url 'vault' %}" class="btn btn-outline-secondary shine-on-hover">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Vault
+                </a>
+                <button type="submit" class="btn btn-primary shine-on-hover">
+                    <i class="fas fa-save me-2"></i>Save Entry
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Form validation
+    (function() {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}
