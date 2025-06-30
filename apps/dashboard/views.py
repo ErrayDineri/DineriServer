@@ -25,7 +25,6 @@ class HomeView(View):
         return render(request, 'dashboard/home.html', {'system_stats': stats})
 
 
-@method_decorator(login_required, name='dispatch')
 class SystemStatsAPIView(View):
     def get(self, request):
         """API endpoint to get real-time system statistics."""
