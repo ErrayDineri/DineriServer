@@ -1,0 +1,429 @@
+/**
+ * Password Vault Specific Styles
+ * Contains optimized layout styles for the vault.html template
+ */
+
+/* Modern Vault Grid Layout - Compact Multi-Row Design */
+.vault-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(900px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    contain: layout style;
+    will-change: contents;
+    /* Prevent layout shifts */
+    min-height: 0;
+    width: 100%;
+}
+
+/* Override Bootstrap container constraints for vault page */
+.vault-container .container,
+.vault-container .container-fluid {
+    max-width: none !important;
+    width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+/* Search Bar Styling */
+.vault-search-container {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.vault-search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    color: white;
+    font-size: 0.9rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.vault-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.vault-search-input:focus {
+    outline: none;
+    border-color: var(--text-accent);
+    box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.vault-search-icon {
+    position: absolute;
+    left: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.vault-search-clear {
+    position: absolute;
+    right: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.vault-search-clear.show {
+    opacity: 1;
+}
+
+.vault-search-clear:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Search Results Info */
+.search-results-info {
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+}
+
+/* Hidden entries during search */
+.vault-entry-card.hidden {
+    display: none;
+}
+
+/* No results message */
+.no-search-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    display: none;
+}
+
+.no-search-results.show {
+    display: block;
+}
+
+/* Vault Card Base - More Compact */
+.vault-entry-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: border-color 0.3s ease;
+    /* Remove any transform that could cause layout shifts */
+    transform: none;
+    contain: content;
+    /* More compact sizing */
+    min-height: 140px;
+}
+
+.vault-entry-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    /* No transform on hover to prevent layout shifts */
+}
+
+/* Card Header & Body - More Compact */
+.vault-entry-card .card-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 1rem;
+    contain: layout style;
+}
+
+.vault-entry-card .card-body {
+    padding: 0.75rem 1rem;
+    contain: layout style;
+}
+
+/* Site Information - Compact */
+.site-info {
+    flex: 1;
+    min-width: 0; /* Important for text truncation */
+    contain: content;
+}
+
+/* Action buttons in header - more compact */
+.vault-entry-card .action-buttons {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.vault-entry-card .action-buttons .btn {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.75rem;
+    min-width: auto;
+}
+
+.site-name {
+    color: white;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    word-break: break-word;
+    line-height: 1.2;
+}
+
+.site-url {
+    color: #17a2b8;
+    text-decoration: none;
+    font-size: 0.8rem;
+    display: block;
+    word-break: break-all;
+    transition: color 0.3s ease;
+    line-height: 1.2;
+}
+
+.site-url:hover {
+    color: #138496;
+}
+
+/* Credential Row - More Compact */
+.credential-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    contain: content;
+}
+
+.credential-row:last-child {
+    margin-bottom: 0;
+}
+
+.credential-label {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.8rem;
+    min-width: 80px;
+}
+
+.credential-value {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 1;
+    justify-content: flex-end;
+    min-width: 0; /* Important for text truncation */
+    contain: content;
+}
+
+.credential-text {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 0.75rem;
+    word-break: break-all;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: width 0.3s ease;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.3rem;
+    contain: content;
+}
+
+.copy-btn, .toggle-password-btn {
+    border-width: 1px;
+    transition: background-color 0.3s ease;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+}
+
+.copy-btn:hover, .toggle-password-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Color-coded buttons */
+.btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.btn-outline-warning {
+    border-color: #ffc107;
+    color: #ffc107;
+}
+
+.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+/* Responsive adjustments for compact layout */
+@media (min-width: 1600px) {
+    .vault-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 0.8rem;
+    }
+}
+
+@media (max-width: 1599px) and (min-width: 1400px) {
+    .vault-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 0.9rem;
+    }
+}
+
+@media (max-width: 1399px) and (min-width: 1200px) {
+    .vault-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 0.8rem;
+    }
+}
+
+@media (max-width: 1199px) and (min-width: 768px) {
+    .vault-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 0.7rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .vault-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 0.5rem;
+    }
+    
+    .vault-entry-card .card-header,
+    .vault-entry-card .card-body {
+        padding: 0.6rem 0.8rem;
+    }
+    
+    .credential-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+        padding: 0.4rem;
+    }
+    
+    .credential-value {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .credential-text {
+        max-width: none;
+        width: calc(100% - 60px); /* Account for buttons */
+        margin-bottom: 0.3rem;
+        font-size: 0.75rem;
+    }
+    
+    .action-buttons {
+        margin-top: 0.3rem;
+    }
+    
+    .site-info {
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .vault-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .credential-row {
+        padding: 0.4rem;
+    }
+    
+    .credential-text {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        width: calc(100% - 50px); /* Account for smaller buttons */
+    }
+    
+    .btn-sm {
+        padding: 0.2rem 0.3rem;
+        font-size: 0.7rem;
+    }
+    
+    .site-name {
+        font-size: 0.9rem;
+    }
+    
+    .site-url {
+        font-size: 0.75rem;
+    }
+}
+
+/* Layout stabilization */
+.vault-container {
+    min-height: calc(100vh - 200px);
+    position: relative;
+    contain: layout;
+    width: 100%;
+    max-width: 100%;
+}
+
+.vault-container .container {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100% !important; /* Override Bootstrap's max-width constraint */
+    overscroll-behavior: none;
+    position: relative;
+    /* Override Bootstrap container behaviors that might cause shifts */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+.vault-container .glass-card {
+    width: 100%;
+    max-width: 100% !important; /* Ensure glass-card takes full available width */
+    contain: content;
+    /* Override base.css glass-card properties that cause layout instability */
+    transform: none !important;
+    transition: none !important;
+    position: static !important;
+    overflow: visible !important;
+    text-align: left !important;
+    /* Prevent any movement or resizing */
+    will-change: auto !important;
+    /* Remove any padding constraints that might limit width */
+    box-sizing: border-box !important;
+}
+
+/* Prevent scrollbar jumps */
+html {
+    scrollbar-gutter: stable;
+}
+
+/* Additional layout stabilization for the vault page */
+.vault-container * {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+}

@@ -1,0 +1,356 @@
+/* Modern UI Components for Dineri Server */
+
+/* Enhanced Card Components */
+.card-modern {
+    background: var(--glass-bg-light);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--accent-gradient);
+    opacity: 0.6;
+}
+
+.card-modern:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--text-accent);
+}
+
+.card-modern .card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--glass-border);
+    padding: var(--space-lg);
+    font-weight: 600;
+    font-family: var(--font-accent);
+}
+
+.card-modern .card-body {
+    padding: var(--space-lg);
+}
+
+/* Modern Input Group */
+.input-group-modern {
+    position: relative;
+    margin-bottom: var(--space-lg);
+}
+
+.input-group-modern .form-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 1rem;
+    padding: 0.875rem 1rem 0.875rem 3rem;
+    transition: all var(--transition-normal);
+}
+
+.input-group-modern .form-control:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--text-accent);
+    box-shadow: 0 0 0 4px rgba(100, 255, 218, 0.1);
+    outline: none;
+}
+
+.input-group-modern .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    z-index: 3;
+    transition: color var(--transition-normal);
+}
+
+.input-group-modern .form-control:focus + .input-icon {
+    color: var(--text-accent);
+}
+
+/* Modern Badge */
+.badge-modern {
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    font-size: 0.875rem;
+    background: var(--primary-gradient);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.badge-success {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+}
+
+.badge-warning {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+}
+
+.badge-info {
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+}
+
+/* Modern Table */
+.table-modern {
+    background: transparent;
+    color: var(--text-primary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.table-modern thead {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.table-modern th {
+    border: none;
+    padding: var(--space-md) var(--space-lg);
+    font-weight: 600;
+    font-family: var(--font-accent);
+    color: var(--text-accent);
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.table-modern td {
+    border: none;
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color var(--transition-normal);
+}
+
+.table-modern tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Modern Modal */
+.modal-modern .modal-content {
+    background: var(--glass-bg-light);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    color: var(--text-primary);
+}
+
+.modal-modern .modal-header {
+    border-bottom: 1px solid var(--glass-border);
+    padding: var(--space-xl);
+}
+
+.modal-modern .modal-title {
+    font-family: var(--font-accent);
+    font-weight: 600;
+    color: var(--text-accent);
+}
+
+.modal-modern .modal-body {
+    padding: var(--space-xl);
+}
+
+.modal-modern .modal-footer {
+    border-top: 1px solid var(--glass-border);
+    padding: var(--space-xl);
+}
+
+/* Modern Navbar Enhancements */
+.navbar-modern {
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg);
+}
+
+.navbar-modern .navbar-nav .nav-link {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    margin: 0 var(--space-xs);
+    transition: all var(--transition-normal);
+}
+
+.navbar-modern .navbar-nav .nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--accent-gradient);
+    opacity: 0.1;
+    transition: left var(--transition-slow);
+}
+
+.navbar-modern .navbar-nav .nav-link:hover::before {
+    left: 100%;
+}
+
+/* Modern Sidebar */
+.sidebar-modern {
+    background: var(--glass-bg-light);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-right: 1px solid var(--glass-border);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    transition: left var(--transition-normal);
+    z-index: 1050;
+    overflow-y: auto;
+}
+
+.sidebar-modern.show {
+    left: 0;
+}
+
+.sidebar-modern .sidebar-header {
+    padding: var(--space-xl);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.sidebar-modern .sidebar-menu {
+    padding: var(--space-lg);
+}
+
+.sidebar-modern .sidebar-menu .nav-link {
+    color: var(--text-secondary);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-sm);
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.sidebar-modern .sidebar-menu .nav-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    transform: translateX(4px);
+}
+
+.sidebar-modern .sidebar-menu .nav-link.active {
+    background: var(--accent-gradient);
+    color: white;
+}
+
+/* Modern Status Indicators */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: var(--space-sm);
+    animation: pulse 2s infinite;
+}
+
+.status-online {
+    background-color: #4caf50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.status-offline {
+    background-color: #f44336;
+    box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+}
+
+.status-warning {
+    background-color: #ff9800;
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+}
+
+/* Modern Tooltip */
+.tooltip-modern {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Dark Mode Overrides */
+body.dark-mode .card-modern {
+    background: var(--glass-bg-dark);
+    border-color: var(--glass-border-dark);
+}
+
+body.dark-mode .modal-modern .modal-content {
+    background: var(--glass-bg-dark);
+    border-color: var(--glass-border-dark);
+}
+
+body.dark-mode .navbar-modern {
+    background: rgba(0, 0, 0, 0.9) !important;
+    border-bottom-color: var(--glass-border-dark);
+}
+
+body.dark-mode .sidebar-modern {
+    background: var(--glass-bg-dark);
+    border-right-color: var(--glass-border-dark);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-modern {
+        margin: var(--space-md);
+    }
+    
+    .table-modern {
+        font-size: 0.875rem;
+    }
+    
+    .table-modern th,
+    .table-modern td {
+        padding: var(--space-sm);
+    }
+    
+    .sidebar-modern {
+        width: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-modern .modal-header,
+    .modal-modern .modal-body,
+    .modal-modern .modal-footer {
+        padding: var(--space-lg);
+    }
+    
+    .card-modern .card-header,
+    .card-modern .card-body {
+        padding: var(--space-md);
+    }
+}
