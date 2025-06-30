@@ -74,10 +74,63 @@ main {
     align-items: center;
     justify-content: center;
     padding-top: 5rem;
+    min-height: calc(100vh - 80px); /* Account for navbar */
+}
+
+/* Adjust main padding when messages are present - with fallback */
+.has-messages main,
+body:has(.messages-container) main {
+    padding-top: 2rem;
 }
 
 .logo-icon {
     height: 24px;
     width: 24px;
     margin: 0 8px;
+}
+
+/* Messages container styling */
+.messages-container {
+    position: relative;
+    z-index: 1000;
+    padding-top: 80px; /* Account for fixed navbar height */
+    padding-bottom: 0;
+}
+
+.messages-container .alert {
+    margin-bottom: 1rem;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode support for messages */
+body.dark-mode .messages-container .alert {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-color);
+}
+
+body.dark-mode .messages-container .alert-warning {
+    background-color: rgba(255, 193, 7, 0.2);
+    border-color: rgba(255, 193, 7, 0.5);
+    color: #ffc107;
+}
+
+body.dark-mode .messages-container .alert-danger {
+    background-color: rgba(220, 53, 69, 0.2);
+    border-color: rgba(220, 53, 69, 0.5);
+    color: #dc3545;
+}
+
+body.dark-mode .messages-container .alert-success {
+    background-color: rgba(25, 135, 84, 0.2);
+    border-color: rgba(25, 135, 84, 0.5);
+    color: #198754;
+}
+
+body.dark-mode .messages-container .alert-info {
+    background-color: rgba(13, 202, 240, 0.2);
+    border-color: rgba(13, 202, 240, 0.5);
+    color: #0dcaf0;
 }

@@ -7,17 +7,6 @@
         <h1>👤 Create Account</h1>
         <p class="lead mb-4">Join us for secure password management</p>
         
-        {% if messages %}
-        <div class="mb-4">
-            {% for message in messages %}
-            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-        
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <form method="post" class="needs-validation" novalidate>

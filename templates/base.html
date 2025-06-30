@@ -24,7 +24,7 @@
 </head>>
 </head>
 
-<body>
+<body{% if messages %} class="has-messages"{% endif %}>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
         <div class="container-fluid">            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'dashboard_home' %}">
                 <img src="{% static 'logo.ico' %}" alt="Logo" height="24">
@@ -72,9 +72,12 @@
                     <button class="btn btn-outline-light" id="darkModeToggle">🌙</button>
                 </div>
             </div>
-        </div>    </nav>    <main class="dark-mode-transition">
-        {% if messages %}
-        <div class="container mt-4">
+        </div>    </nav>
+    
+    <!-- Messages container - outside of main to avoid centering conflicts -->
+    {% if messages %}
+    <div class="messages-container">
+        <div class="container">
             {% for message in messages %}
             <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
                 {{ message }}
@@ -82,8 +85,10 @@
             </div>
             {% endfor %}
         </div>
-        {% endif %}
-        
+    </div>
+    {% endif %}
+
+    <main class="dark-mode-transition">        
         {% block content %}{% endblock %}
     </main>    <!-- Bootstrap JS -->    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom Scripts -->
