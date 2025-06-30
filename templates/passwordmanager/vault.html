@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="vault-container">
-<div class="container py-4">
+<div class="container-fluid py-4">
     <div class="glass-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div class="d-flex align-items-center">
@@ -25,7 +25,21 @@
         </div>
 
         {% if entries %}
-        <div class="vault-grid">
+        <!-- Search Bar -->
+        <div class="vault-search-container">
+            <div class="position-relative">
+                <i class="fas fa-search vault-search-icon"></i>
+                <input type="text" id="vaultSearch" class="vault-search-input" placeholder="Search passwords by site name, username, or URL...">
+                <button type="button" id="clearSearch" class="vault-search-clear">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Results Info -->
+        <div id="searchResultsInfo" class="search-results-info" style="display: none;"></div>
+
+        <div class="vault-grid" id="vaultGrid">
             {% for entry, decrypted_password in entries %}
             <div class="vault-entry-card">
                 <div class="card-header">
@@ -93,6 +107,16 @@
             </div>
             {% endfor %}
         </div>
+
+        <!-- No Search Results Message -->
+        <div id="noSearchResults" class="no-search-results">
+            <div class="mb-3">
+                <i class="fas fa-search fa-3x"></i>
+            </div>
+            <h4>No matches found</h4>
+            <p>Try adjusting your search terms or <button type="button" id="clearSearchBtn" class="btn btn-link p-0 text-info">clear the search</button> to see all entries.</p>
+        </div>
+
         {% else %}
         <div class="text-center py-5">
             <div class="mb-4">
