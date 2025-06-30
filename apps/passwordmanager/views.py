@@ -51,6 +51,7 @@ def vault(request):
         master_pw = request.POST['master_password']
         entries = VaultEntry.objects.filter(user=request.user).select_related()
         decrypted = []
+        failed_count = 0
         
         if entries:
             # Since all entries for a user share the same salt, derive key once
@@ -59,21 +60,22 @@ def vault(request):
                 shared_key = derive_key(master_pw, get_user_salt(request.user.id))
                 key_derivation_time = round((time.time() - key_derivation_start) * 1000, 2)
                 
-                # Decrypt all entries using the shared key
+                # Decrypt entries using the shared key, only include successfully decrypted ones
                 decryption_start = time.time()
                 for entry in entries:
                     try:
                         decrypted_pw = decrypt_password(entry.encrypted_password, entry.nonce, shared_key)
+                        # Only add to list if decryption succeeded
                         decrypted.append((entry, decrypted_pw))
                     except Exception:
-                        decrypted.append((entry, 'Invalid master password'))
+                        # Count failed decryptions but don't include them in the result
+                        failed_count += 1
                 
                 decryption_time = round((time.time() - decryption_start) * 1000, 2)
                 
             except Exception:
-                # If key derivation fails, mark all entries as invalid
-                for entry in entries:
-                    decrypted.append((entry, 'Invalid master password'))
+                # If key derivation fails, no entries can be decrypted
+                failed_count = len(entries)
                 key_derivation_time = 0
                 decryption_time = 0
         else:
@@ -83,14 +85,19 @@ def vault(request):
         end_time = time.time()
         total_time = round((end_time - start_time) * 1000, 2)
         
-        # Remove timing messages for cleaner UI
-        # messages.info(request, f'🔓 Vault decrypted in {total_time}ms ({len(entries)} entries, 1 key derivation)')
-        # messages.info(request, f'⚡ Breakdown: Key derivation: {key_derivation_time}ms, Decryption: {decryption_time}ms')
+        # Show warning if some entries couldn't be decrypted
+        if failed_count > 0:
+            if len(decrypted) == 0:
+                messages.error(request, f'� Unable to decrypt any entries. Please check your master password.')
+            else:
+                messages.warning(request, f'⚠️ {failed_count} entries could not be decrypted and are hidden. They may have been encrypted with a different master password.')
         
         return render(request, 'passwordmanager/vault.html', {
             'entries': decrypted,
             'decrypt_time': total_time,
-            'entries_count': len(entries)
+            'entries_count': len(entries),
+            'decrypted_count': len(decrypted),
+            'failed_count': failed_count
         })
     return render(request, 'passwordmanager/vault_login.html')
 

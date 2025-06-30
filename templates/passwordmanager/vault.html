@@ -12,7 +12,18 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div class="d-flex align-items-center">
                 <i class="fas fa-shield-alt me-3" style="font-size: 1.8rem; color: var(--text-accent);"></i>
-                <h1 class="m-0">Password Vault</h1>
+                <div>
+                    <h1 class="m-0">Password Vault</h1>
+                    {% if entries %}
+                    <small class="text-muted">
+                        {% if failed_count > 0 %}
+                            Showing {{ decrypted_count }} of {{ entries_count }} entries
+                        {% else %}
+                            {{ entries_count }} entries
+                        {% endif %}
+                    </small>
+                    {% endif %}
+                </div>
             </div>
             <div class="btn-group">
                 <a href="{% url 'add_entry' %}" class="btn btn-success shine-on-hover">
