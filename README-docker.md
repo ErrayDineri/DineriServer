@@ -18,22 +18,28 @@ git clone https://github.com/yourusername/dineri-server.git
 cd dineri-server
 ```
 
-2. **Run the setup script**
+2. **Configure Environment**
 ```bash
-chmod +x docker-setup.sh
-./docker-setup.sh
+# Copy the example environment file
+cp .env.example .env
+# Edit .env with your secure passwords and preferences
+nano .env  # or use your preferred editor
 ```
 
-3. **Edit the .env file** with your secure passwords
-
-4. **Start the containers**
+3. **Start the containers**
 ```bash
 docker-compose up -d
 ```
 
+4. **Verify everything is running**
+```bash
+docker-compose ps
+```
+
 5. **Access Dineri Server**
-- Main application: http://localhost:80
-- qBittorrent: http://localhost:8080
+- Main application: http://localhost
+- qBittorrent Web UI: http://localhost:8080
+- Direct Django (development): http://localhost:8000
 
 ## 🔧 Configuration
 
@@ -49,9 +55,18 @@ Edit the `.env` file to configure:
 
 Your data is stored in:
 
-- `./data`: Database files
-- `./media`: Media files, downloads
-- `./config`: Configuration files
+- `./data`: Database and application data
+- `./media`: Downloaded media files and user uploads  
+- `./config`: qBittorrent and nginx configuration files
+- Docker volumes: `postgres_data`, `redis_data`, `static_volume`
+
+### Important Notes
+
+- The Django application runs behind an Nginx reverse proxy
+- Static files are automatically collected and served by Nginx
+- Database migrations run automatically on container startup
+- qBittorrent downloads go to `./media/downloads/`
+- All containers run on the `dineri-network` bridge network
 
 ## 🛠️ Maintenance
 

@@ -175,12 +175,51 @@ DineriServer/
 
 ## 🚀 Installation & Setup
 
+### **🐳 Docker Installation (Recommended)**
+
+The easiest way to get started is using Docker:
+
+1. **Clone and Setup**
+   ```bash
+   git clone [repository-url]
+   cd DineriServer
+   ```
+
+2. **Configure Environment**
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+   # Edit .env with your preferred passwords and settings
+   ```
+
+3. **Start with Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Access Your Server**
+   - **Main Application**: http://localhost (Nginx reverse proxy)
+   - **Direct Django**: http://localhost:8000 (for development)
+   - **qBittorrent Web UI**: http://localhost:8080
+
+The Docker setup includes:
+- Django web application with automatic static file collection
+- PostgreSQL database
+- Redis for caching and task queue
+- Nginx for static file serving and reverse proxy
+- qBittorrent for torrent management
+- Celery worker and beat for background tasks
+
+### **📖 Manual Installation**
+
+For development or custom deployments:
+
 ### **Prerequisites**
-- **Python 3.8+** with pip
-- **qBittorrent** with Web UI enabled (default port 8090)
+- **Python 3.10+** with pip
+- **qBittorrent** with Web UI enabled (port 8080)
 - **FFmpeg** for media transcoding
 - **Redis** for task queue and caching
-- **Internet connection** for torrent site scraping
+- **PostgreSQL** (recommended) or SQLite
 
 ### **Quick Installation**
 
@@ -239,10 +278,13 @@ DATABASE_URL=sqlite:///db.sqlite3
 REDIS_URL=redis://localhost:6379/0
 
 # qBittorrent Settings
-QBITTORRENT_HOST=localhost
-QBITTORRENT_PORT=8090
+QBITTORRENT_HOST=qbittorrent  # Use 'localhost' for manual installation
+QBITTORRENT_PORT=8080
 QBITTORRENT_USERNAME=admin
-QBITTORRENT_PASSWORD=adminpass
+QBITTORRENT_PASSWORD=your-qb-password
+
+# Database (Docker uses PostgreSQL)
+DATABASE_URL=postgresql://dineri:your-db-password@db/dineri
 
 # Security Settings
 SECRET_KEY=your-secret-key-here
@@ -279,6 +321,20 @@ FFMPEG_PATH=/usr/bin/ffmpeg
 - Configure Redis memory limits
 - Set up media caching strategies
 - Optimize database queries and indexing
+
+## 🐛 Troubleshooting
+
+### **Docker Issues**
+- **Containers not starting**: Check `docker-compose logs` for errors
+- **Static files not loading**: Verify nginx container is running and volumes are mounted
+- **Database connection errors**: Check PostgreSQL container health with `docker-compose ps`
+- **Permission issues**: Ensure proper file permissions on mounted volumes
+
+### **Application Issues**
+- **qBittorrent connection failed**: Verify qBittorrent Web UI credentials in `.env`
+- **Media not transcoding**: Check FFmpeg installation and `FFMPEG_PATH` setting
+- **Search not working**: Verify internet connection and site accessibility
+- **Password vault empty**: Ensure correct master password and check encryption keys
 
 ## 📱 Usage Examples
 
