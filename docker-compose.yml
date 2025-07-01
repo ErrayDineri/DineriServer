@@ -1,0 +1,160 @@
+version: '3.8'
+
+services:
+  # Main Django application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qbittorrent:
+        condition: service_started
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./media:/app/media
+      - ./config:/app/config
+      - ./static:/app/static
+      - static_volume:/app/staticfiles
+    environment:
+      - DATABASE_URL=postgresql://dineri:${DB_PASSWORD}@db/dineri
+      - REDIS_URL=redis://redis:6379/0
+      - QBITTORRENT_HOST=qbittorrent
+      - QBITTORRENT_PORT=8080
+      - QBITTORRENT_USERNAME=${QB_USERNAME}
+      - QBITTORRENT_PASSWORD=${QB_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=True
+      - FFMPEG_PATH=/usr/bin/ffmpeg
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    networks:
+      - dineri-network
+
+  # Celery worker for background tasks
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: celery -A homeserver worker --loglevel=info
+    depends_on:
+      - web
+      - redis
+    volumes:
+      - ./data:/app/data
+      - ./media:/app/media
+      - ./config:/app/config
+    environment:
+      - DATABASE_URL=postgresql://dineri:${DB_PASSWORD}@db/dineri
+      - REDIS_URL=redis://redis:6379/0
+      - QBITTORRENT_HOST=qbittorrent
+      - QBITTORRENT_PORT=8080
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=False
+    networks:
+      - dineri-network
+
+  # Celery beat for scheduled tasks
+  beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: celery -A homeserver beat --loglevel=info
+    depends_on:
+      - web
+      - redis
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    environment:
+      - DATABASE_URL=postgresql://dineri:${DB_PASSWORD}@db/dineri
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=False
+    networks:
+      - dineri-network
+
+  # PostgreSQL database
+  db:
+    image: postgres:14-alpine
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=dineri
+      - POSTGRES_DB=dineri
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dineri"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dineri-network
+
+  # Redis for caching and message broker
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dineri-network
+
+  # qBittorrent with Web UI
+  qbittorrent:
+    image: linuxserver/qbittorrent:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"  # Web UI
+      - "6881:6881"  # Torrent port
+      - "6881:6881/udp"  # Torrent port (UDP)
+    volumes:
+      - ./config/qbittorrent:/config
+      - ./media/downloads:/downloads
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WEBUI_PORT=8080
+    networks:
+      - dineri-network
+
+  # Nginx for serving static files and proxying
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"  # For HTTPS
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./media:/media
+      - ./static:/app/static
+      - static_volume:/app/staticfiles
+    depends_on:
+      - web
+    networks:
+      - dineri-network
+
+networks:
+  dineri-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_volume:

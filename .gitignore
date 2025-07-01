@@ -66,3 +66,19 @@ static/js/*.min.js
 # OS files
 Thumbs.db
 ehthumbs.db
+
+# Docker volumes and runtime data
+data/
+config/qbittorrent/qBittorrent/
+docker-compose.override.yml
+
+# Celery
+celerybeat-schedule*
+
+# qBittorrent runtime files
+*.socket
+ipc-socket
+
+# Database files
+*.sqlite3
+db.sqlite3
